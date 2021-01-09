@@ -5,6 +5,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/S3B_BRANCATI_FRACHE_MOITRIER_ZAPP_Wishna.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/S3B_BRANCATI_FRACHE_MOITRIER_ZAPP_Wishna.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wishlist/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/wishlist/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wishlist/src/conf/conf.ini" beforeDir="false" afterPath="$PROJECT_DIR$/wishlist/src/conf/conf.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wishlist/src/controller/ParticipantController.php" beforeDir="false" afterPath="$PROJECT_DIR$/wishlist/src/controller/ParticipantController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wishlist/src/vue/ParticipantVue.php" beforeDir="false" afterPath="$PROJECT_DIR$/wishlist/src/vue/ParticipantVue.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +89,7 @@
       <option name="presentableId" value="Default" />
       <updated>1610202933170</updated>
       <workItem from="1610202934306" duration="404000" />
-      <workItem from="1610203349710" duration="684000" />
+      <workItem from="1610203349710" duration="1372000" />
     </task>
     <servers />
   </component>
