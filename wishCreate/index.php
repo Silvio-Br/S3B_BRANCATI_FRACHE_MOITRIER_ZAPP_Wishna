@@ -28,4 +28,14 @@ $app->get('/meslistes/{token_admin}[/]', function(Request $rq, Response $rs, arr
     return $c->displayListe($rq,$rs,$args);
 })->setName('detailListe');
 
+$app->get('/meslistes/{token_admin}/modifier/item/{id_item}[/]', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    return $c->displayModifierItem($rq,$rs,$args);
+})->setName('modifierItem');
+
+$app->post('/meslistes/{token_admin}/modifier/item/{id_item}/', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    $c->postModifierItem($rq,$rs,$args);
+});
+
 $app->run();

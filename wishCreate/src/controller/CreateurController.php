@@ -4,6 +4,7 @@ namespace wishcreate\controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use wishcreate\models\Item;
 use wishcreate\models\Liste;
 use wishcreate\vue\CreateurVue;
 class CreateurController
@@ -93,4 +94,71 @@ END;
         }
 
     }
+
+    public function displayModifierItem(Request $rq, Response $rs, array $args): Response
+    {
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $item = Item::query()->where('id', '=', $args['id_item'])->firstOrFail();
+        if ($item->reservation == 0) {
+            $v = new CreateurVue([$item]);
+            $rs->getBody()->write($v->render($htmlvars, CreateurVue::MODIFIER_ITEM));
+        } else {
+            echo "Vous ne pouvez pas modifier cet item, il est déjà réservé";
+        }
+
+        return $rs;
+    }
+
+    public function postModifierItem(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $item = Item::query()->where('id', '=', $args['id_item'])->firstOrFail();
+        $urlRedirection = $this->c->router->pathFor('detailListe', ['token_admin'=>$args["token_admin"]]);
+
+        if ($_POST['bouton'] == "OK") {
+            $nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
+            $prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
+            $url = filter_var($data['url'], FILTER_SANITIZE_URL);
+            $img = filter_var($data['img'], FILTER_SANITIZE_URL);
+
+            $racineImg = substr($img, 0,8);
+            if ($racineImg == "web/img/") {
+                $img = substr($img, 8);
+            }
+
+            if (strlen($img) == 0) {
+                $img = "noImage.png";
+            }
+
+            $item->nom = $nom;
+            $item->descr = $description;
+            $item->url = $url;
+            $item->tarif = $prix;
+            $item->img = $img;
+            $item->save();
+
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'message' => "Item modifié avec succès !",
+                'url' => $urlRedirection
+            ];
+
+        } elseif ($_POST['bouton'] == "Supprimer cet item") {
+            $item->delete();
+
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'message' => "Item supprimé avec succès !",
+                'url' => $urlRedirection
+            ];
+        }
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        return $rs;
+    }
+
 }

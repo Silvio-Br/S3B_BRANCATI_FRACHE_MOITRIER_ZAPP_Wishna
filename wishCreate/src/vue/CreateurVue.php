@@ -12,6 +12,7 @@ class CreateurVue
     const HOME = 1;
     const LISTE_AVEC_ITEMS = 2;
 
+    const MODIFIER_ITEM = 3;
 
     /**
      * CreateurVue constructor.
@@ -105,6 +106,30 @@ END;
         return $html;
     }
 
+    private function unFormulaireModifierItem($item): string
+    {
+        $prix = floatval($item->tarif);
+
+        $img = null;
+        if (!(substr($item->img, 0,4) == "http") && !(substr($item->img, 0,4) == "www") ) {
+            $img = "web/img/$item->img";
+        } else {
+            $img = $item->img;
+        }
+
+        $html = <<<END
+<form method="post">
+            <p>Nom<span class="required">*</span> : <input type="text" name="nom" value="{$item->nom}" required/></p>
+            <p>Description<span class="required">*</span> : <input type="text" name="desc" value="{$item->descr} "required/></p>
+            <p>Prix<span class="required">*</span> : <input type="number" min="0" step="1" name="prix" value="{$prix}" required/></p>
+            <p>Url : <input type="url" name="url" value="{$item->url}"/></p>
+            <p>Image : <input name="img" value="{$img}"/></p>
+            <p><input type="submit" value="OK" name="bouton"><input type="submit" value="Supprimer cet item" name="bouton"></p>
+        </form>
+END;
+        return $html;
+    }
+
 
     public function render(array $vars, int $typeAffichage): string {
         switch ($typeAffichage) {
@@ -113,6 +138,9 @@ END;
                 break;
             case CreateurVue::LISTE_AVEC_ITEMS:
                 $content = $this->uneListeHtml($this->data[0], $vars);
+                break;
+            case CreateurVue::MODIFIER_ITEM:
+                $content = $this->unFormulaireModifierItem($this->data[0]);
                 break;
         }
         $html = <<<END
