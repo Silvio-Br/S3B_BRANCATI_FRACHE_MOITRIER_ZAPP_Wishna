@@ -1,3 +1,31 @@
 <?php
+session_start();
+use Slim\App;
+use Slim\Container;
+use Slim\Http\Request;
+use Slim\Http\Response;
+use wishcreate\controller\CreateurController;
+use wishcreate\database\Eloquent;
 
-//index
+require_once __DIR__ . '/vendor/autoload.php';
+$c = new Container(['settings'=>['displayErrorDetails'=>true]]);
+$app = new App($c);
+
+Eloquent::start(__DIR__ . '/src/conf/conf.ini');
+
+$app->get('/', function(Request $rq, Response $rs, array $args): Response {
+    $c = new CreateurController($this);
+    return $c->displayHome($rq,$rs,$args);
+})->setName('home');
+
+$app->post('/', function (Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    $c->postAccederListe($rq,$rs,$args);
+});
+
+$app->get('/meslistes/{token_admin}[/]', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    return $c->displayListe($rq,$rs,$args);
+})->setName('detailListe');
+
+$app->run();
