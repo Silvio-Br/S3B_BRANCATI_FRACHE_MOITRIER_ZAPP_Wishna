@@ -4,6 +4,7 @@ namespace wishcreate\controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use wishcreate\models\Item;
 use wishcreate\models\Liste;
 use wishcreate\vue\CreateurVue;
 class CreateurController
@@ -93,4 +94,208 @@ END;
         }
 
     }
+
+    public function displayModifierItem(Request $rq, Response $rs, array $args): Response
+    {
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $item = Item::query()->where('id', '=', $args['id_item'])->firstOrFail();
+        if ($item->reservation == 0) {
+            $v = new CreateurVue([$item]);
+            $rs->getBody()->write($v->render($htmlvars, CreateurVue::MODIFIER_ITEM));
+        } else {
+            echo "Vous ne pouvez pas modifier cet item, il est déjà réservé";
+        }
+
+        return $rs;
+    }
+
+    public function postModifierItem(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $item = Item::query()->where('id', '=', $args['id_item'])->firstOrFail();
+        $urlRedirection = $this->c->router->pathFor('detailListe', ['token_admin'=>$args["token_admin"]]);
+
+        if ($_POST['bouton'] == "OK") {
+            $nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
+            $prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
+            $url = filter_var($data['url'], FILTER_SANITIZE_URL);
+            $img = filter_var($data['img'], FILTER_SANITIZE_URL);
+
+            $racineImg = substr($img, 0,8);
+            if ($racineImg == "web/img/") {
+                $img = substr($img, 8);
+            }
+
+            if (strlen($img) == 0) {
+                $img = "noImage.png";
+            }
+
+            $item->nom = $nom;
+            $item->descr = $description;
+            $item->url = $url;
+            $item->tarif = $prix;
+            $item->img = $img;
+            $item->save();
+
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'message' => "Item modifié avec succès !",
+                'url' => $urlRedirection
+            ];
+
+        } elseif ($_POST['bouton'] == "Supprimer cet item") {
+            $item->delete();
+
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'message' => "Item supprimé avec succès !",
+                'url' => $urlRedirection
+            ];
+        }
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        return $rs;
+    }
+
+    public function displayAjouterItem(Request $rq, Response $rs, array $args): Response
+    {
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $liste = Liste::query()->where('tokenAdmin','=',$args['token_admin'])->firstOrFail();
+
+        $v = new CreateurVue($liste->no);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::AJOUTER_ITEM));
+        return $rs;
+    }
+
+    public function displayModifierListe(Request $rq, Response $rs, array $args): Response
+    {
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $liste = Liste::query()->where('tokenAdmin','=',$args['token_admin'])->firstOrFail();
+
+        $v = new CreateurVue([$liste]);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::MODIFIER_LISTE));
+        return $rs;
+    }
+
+    public function postCreate(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $titre = filter_var($data['titre'], FILTER_SANITIZE_STRING);
+        $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
+
+        $token = bin2hex(random_bytes(8));
+        $tokenAdmin = bin2hex(random_bytes(8));
+
+        $liste = new Liste();
+        $liste->titre = $titre;
+        $liste->description = $description;
+        $liste->expiration = $data['date'];
+        $liste->token = $token;
+        $liste->tokenAdmin = $tokenAdmin;
+
+        $liste->save();
+
+        $url = $this->c->router->pathFor('detailListe', ['token_admin'=>$tokenAdmin]);
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'message' => "Utilisez ce lien pour modifier votre liste : http://$_SERVER[HTTP_HOST]/Wishna/wishcreate/meslistes/{$tokenAdmin}",
+            'url' => $url
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        return $rs;
+    }
+
+    public function postModifierListe(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $titre = filter_var($data['titre'], FILTER_SANITIZE_STRING);
+        $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
+
+        $tokenAdmin = $args['token_admin'];
+
+        $liste = Liste::query()->where('tokenAdmin','=',$tokenAdmin)->firstOrFail();
+        $liste->titre = $titre;
+        $liste->description = $description;
+        $liste->expiration = $data['date'];
+
+        $liste->save();
+
+        $url = $this->c->router->pathFor('detailListe', ['token_admin'=>$liste->tokenAdmin]);
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'message' => "Liste modifiée avec succès !",
+            'url' => $url
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        return $rs;
+    }
+
+    public function postAjouterItem(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+        $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
+        $prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
+        $url = filter_var($data['url'], FILTER_SANITIZE_URL);
+        $img = filter_var($data['img'], FILTER_SANITIZE_URL);
+
+        $racineImg = substr($img, 0,8);
+        if ($racineImg == "web/img/") {
+            $img = substr($img, 8);
+        }
+
+        if (strlen($img) == 0) {
+            $img = "noImage.png";
+        }
+
+        $tokenAdmin = $args['token_admin'];
+
+        $liste = Liste::query()->where('tokenAdmin','=',$tokenAdmin)->firstOrFail();
+        $item = new Item();
+        $item->liste_id = $liste->no;
+        $item->nom = $nom;
+        $item->descr = $description;
+        $item->url = $url;
+        $item->tarif = $prix;
+        $item->img = $img;
+
+        $item->save();
+
+        $url = $this->c->router->pathFor('detailListe', ['token_admin'=>$liste->tokenAdmin]);
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'message' => "Item ajouté avec succès !",
+            'url' => $url
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        return $rs;
+    }
+
+    public function displayFormulaire(Request $rq, Response $rs, array $args): Response
+    {
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::FORM));
+        return $rs;
+    }
+
 }

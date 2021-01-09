@@ -92,4 +92,26 @@ class ParticipantController
             return $rs;
         }
     }
+
+    public function postReserverItem(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+        $message = filter_var($data['message'], FILTER_SANITIZE_STRING);
+
+        $url = $this->c->router->pathFor('detailListe', ['token_liste'=>$args['token_liste']]);
+        $item = Item::query()->where('id', '=', $args['id_item'])->update(array('reservation'=>1, 'nom_reservation'=>$data['nom'], 'message_reservation'=>$data['message']));
+
+        $_SESSION['nom']=$data['nom'];
+
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'message' => "Votre réservation a été enregistrée avec succès !",
+            'url' => $url
+        ];
+
+        $v = new ParticipantVue(null);
+        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::ALERT_BOX));
+        return $rs;
+    }
 }

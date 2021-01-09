@@ -33,4 +33,9 @@ $app->get('/liste/{token_liste}/item/{id_item}[/]', function(Request $rq, Respon
     return $c->displayItem($rq,$rs,$args);
 })->setName('detailItem');
 
+$app->post("/liste/{token_liste}/item/{id_item}[/]", function (Request $rq, Response $rs, array $args) {
+    $c = new ParticipantController($this);
+    $c->postReserverItem($rq,$rs,$args);
+});
+
 $app->run();
