@@ -1,0 +1,27 @@
+body {
+    font-family: "Arial"
+}
+
+img {
+    float: right;
+    margin: 6px;
+}
+
+.imageItem{
+    width: 100px;
+    height: auto;
+}
+
+table
+{
+    border-collapse: collapse;
+}
+td, th /* Mettre une bordure sur les td ET les th */
+{
+    border: 1px solid black;
+    text-align: center;
+}
+
+.required {
+    color: red;
+}
