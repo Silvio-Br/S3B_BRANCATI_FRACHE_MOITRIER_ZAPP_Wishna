@@ -38,4 +38,24 @@ $app->post('/meslistes/{token_admin}/modifier/item/{id_item}/', function(Request
     $c->postModifierItem($rq,$rs,$args);
 });
 
+$app->get('/meslistes/{token_admin}/modifier[/]', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    return $c->displayModifierListe($rq,$rs,$args);
+})->setName('modifierListe');
+
+$app->post('/meslistes/{token_admin}/modifier[/]', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    $c->postModifierListe($rq,$rs,$args);
+});
+
+$app->get('/create[/]', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    return $c->displayFormulaire($rq, $rs, $args);
+})->setName('create');
+
+$app->post("/create[/]", function (Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    $c->postCreate($rq,$rs,$args);
+});
+
 $app->run();

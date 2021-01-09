@@ -11,8 +11,10 @@ class CreateurVue
 
     const HOME = 1;
     const LISTE_AVEC_ITEMS = 2;
-
     const MODIFIER_ITEM = 3;
+    const MODIFIER_LISTE = 4;
+    const FORM = 5;
+    const ALERT_BOX = 6;
 
     /**
      * CreateurVue constructor.
@@ -130,6 +132,47 @@ END;
         return $html;
     }
 
+    private function unFormulaireModifierListe(Liste $liste): string
+    {
+        $date = new \DateTime("tomorrow");
+        $date = $date->format("Y-m-d");
+        $html = <<<END
+<form method="post">
+            <p>Titre<span class="required">*</span> : <input type="text" name="titre" value="{$liste->titre}"required/></p>
+            <p>Description<span class="required">*</span> : <input type="text" name="desc" value="{$liste->description}"required/></p>
+            <p>Date d'expiration<span class="required">*</span> : <input type="date" name="date" value="{$liste->expiration}" min="{$date}" required/></p>
+            <p><input type="submit" value="OK"></p>
+        </form>
+END;
+        return $html;
+    }
+
+    private function unFormulaireHtml(): string {
+        $date = new \DateTime("tomorrow");
+        $date = $date->format("Y-m-d");
+        $html = <<<END
+<form method="post">
+            <p>Titre<span class="required">*</span> : <input type="text" name="titre" required/></p>
+            <p>Description<span class="required">*</span> : <input type="text" name="desc" required/></p>
+            <p>Date d'expiration<span class="required">*</span> : <input type="date" name="date" min="{$date}" required/></p>
+            <p><input type="submit" value="OK"></p>
+        </form>
+END;
+        return $html;
+    }
+
+    public function messageAlertBox($vars): string
+    {
+        $html = <<<END
+<script LANGUAGE='JavaScript'>
+    window.alert('{$vars['message']}');
+    window.location.href='{$vars['url']}';
+    </script>
+END;
+        return $html;
+
+    }
+
 
     public function render(array $vars, int $typeAffichage): string {
         switch ($typeAffichage) {
@@ -141,6 +184,15 @@ END;
                 break;
             case CreateurVue::MODIFIER_ITEM:
                 $content = $this->unFormulaireModifierItem($this->data[0]);
+                break;
+            case CreateurVue::MODIFIER_LISTE:
+                $content = $this->unFormulaireModifierListe($this->data[0]);
+                break;
+            case CreateurVue::FORM:
+                $content = $this->unFormulaireHtml();
+                break;
+            case CreateurVue::ALERT_BOX:
+                $content = $this->messageAlertBox($vars);
                 break;
         }
         $html = <<<END

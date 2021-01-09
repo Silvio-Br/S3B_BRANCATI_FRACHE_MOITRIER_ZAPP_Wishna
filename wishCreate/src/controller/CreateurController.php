@@ -161,4 +161,85 @@ END;
         return $rs;
     }
 
+    public function displayModifierListe(Request $rq, Response $rs, array $args): Response
+    {
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $liste = Liste::query()->where('tokenAdmin','=',$args['token_admin'])->firstOrFail();
+
+        $v = new CreateurVue([$liste]);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::MODIFIER_LISTE));
+        return $rs;
+    }
+
+    public function postCreate(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $titre = filter_var($data['titre'], FILTER_SANITIZE_STRING);
+        $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
+
+        $token = bin2hex(random_bytes(8));
+        $tokenAdmin = bin2hex(random_bytes(8));
+
+        $liste = new Liste();
+        $liste->titre = $titre;
+        $liste->description = $description;
+        $liste->expiration = $data['date'];
+        $liste->token = $token;
+        $liste->tokenAdmin = $tokenAdmin;
+
+        $liste->save();
+
+        $url = $this->c->router->pathFor('detailListe', ['token_admin'=>$tokenAdmin]);
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'message' => "Utilisez ce lien pour modifier votre liste : http://$_SERVER[HTTP_HOST]/Wishna/wishcreate/meslistes/{$tokenAdmin}",
+            'url' => $url
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        return $rs;
+    }
+
+    public function postModifierListe(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $titre = filter_var($data['titre'], FILTER_SANITIZE_STRING);
+        $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
+
+        $tokenAdmin = $args['token_admin'];
+
+        $liste = Liste::query()->where('tokenAdmin','=',$tokenAdmin)->firstOrFail();
+        $liste->titre = $titre;
+        $liste->description = $description;
+        $liste->expiration = $data['date'];
+
+        $liste->save();
+
+        $url = $this->c->router->pathFor('detailListe', ['token_admin'=>$liste->tokenAdmin]);
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'message' => "Liste modifiée avec succès !",
+            'url' => $url
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        return $rs;
+    }
+
+    public function displayFormulaire(Request $rq, Response $rs, array $args): Response
+    {
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::FORM));
+        return $rs;
+    }
+
 }
