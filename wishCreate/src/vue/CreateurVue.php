@@ -15,6 +15,7 @@ class CreateurVue
     const MODIFIER_LISTE = 4;
     const FORM = 5;
     const ALERT_BOX = 6;
+    const AJOUTER_ITEM = 7;
 
     /**
      * CreateurVue constructor.
@@ -161,6 +162,21 @@ END;
         return $html;
     }
 
+    private function unFormulaireAjouterItem(): string
+    {
+        $html = <<<END
+<form method="post">
+            <p>Nom<span class="required">*</span> : <input type="text" name="nom" required/></p>
+            <p>Description<span class="required">*</span> : <input type="text" name="desc" required/></p>
+            <p>Prix<span class="required">*</span> : <input type="number" min="0" name="prix" required/></p>
+            <p>Url : <input type="url" name="url"/></p>
+            <p>Image : <input name="img" value="web/img/"/></p>
+            <p><input type="submit" value="OK"></p>
+        </form>
+END;
+        return $html;
+    }
+
     public function messageAlertBox($vars): string
     {
         $html = <<<END
@@ -193,6 +209,9 @@ END;
                 break;
             case CreateurVue::ALERT_BOX:
                 $content = $this->messageAlertBox($vars);
+                break;
+            case CreateurVue::AJOUTER_ITEM:
+                $content = $this->unFormulaireAjouterItem();
                 break;
         }
         $html = <<<END

@@ -161,6 +161,19 @@ END;
         return $rs;
     }
 
+    public function displayAjouterItem(Request $rq, Response $rs, array $args): Response
+    {
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $liste = Liste::query()->where('tokenAdmin','=',$args['token_admin'])->firstOrFail();
+
+        $v = new CreateurVue($liste->no);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::AJOUTER_ITEM));
+        return $rs;
+    }
+
     public function displayModifierListe(Request $rq, Response $rs, array $args): Response
     {
         $htmlvars = [
@@ -223,6 +236,49 @@ END;
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
             'message' => "Liste modifiée avec succès !",
+            'url' => $url
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        return $rs;
+    }
+
+    public function postAjouterItem(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+        $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
+        $prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
+        $url = filter_var($data['url'], FILTER_SANITIZE_URL);
+        $img = filter_var($data['img'], FILTER_SANITIZE_URL);
+
+        $racineImg = substr($img, 0,8);
+        if ($racineImg == "web/img/") {
+            $img = substr($img, 8);
+        }
+
+        if (strlen($img) == 0) {
+            $img = "noImage.png";
+        }
+
+        $tokenAdmin = $args['token_admin'];
+
+        $liste = Liste::query()->where('tokenAdmin','=',$tokenAdmin)->firstOrFail();
+        $item = new Item();
+        $item->liste_id = $liste->no;
+        $item->nom = $nom;
+        $item->descr = $description;
+        $item->url = $url;
+        $item->tarif = $prix;
+        $item->img = $img;
+
+        $item->save();
+
+        $url = $this->c->router->pathFor('detailListe', ['token_admin'=>$liste->tokenAdmin]);
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'message' => "Item ajouté avec succès !",
             'url' => $url
         ];
 

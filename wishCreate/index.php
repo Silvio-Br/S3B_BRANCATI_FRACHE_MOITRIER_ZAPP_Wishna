@@ -48,6 +48,16 @@ $app->post('/meslistes/{token_admin}/modifier[/]', function(Request $rq, Respons
     $c->postModifierListe($rq,$rs,$args);
 });
 
+$app->post('/meslistes/{token_admin}/ajouter[/]', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    $c->postAjouterItem($rq,$rs,$args);
+});
+
+$app->get('/meslistes/{token_admin}/ajouter[/]', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    return $c->displayAjouterItem($rq,$rs,$args);
+})->setName('ajouterItem');
+
 $app->get('/create[/]', function(Request $rq, Response $rs, array $args) {
     $c = new CreateurController($this);
     return $c->displayFormulaire($rq, $rs, $args);
