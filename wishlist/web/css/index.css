@@ -1,0 +1,84 @@
+body {
+    font-family: "Arial";
+    background-color: whitesmoke;
+}
+
+.nom {
+    color: #222222;
+    font-size: 250%;
+    text-align: center;
+}
+
+.desc {
+    color : #333333;
+    margin-left: 10%;
+    margin-bottom: 30px;
+    font-size: 120%;
+}
+
+.tableau {
+    margin-top: 50px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.imageItem{
+    width: 100px;
+    height: auto;
+    text-align: center;
+    margin : 6px;
+}
+
+table
+{
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: center;
+}
+
+th{
+    font-size: 110%;
+    width: 200px;
+}
+
+a{
+    color : #222222;
+    font-weight: bold;
+}
+
+form{
+    font-size: 110%;
+    margin-left: 2%;
+}
+
+.prix, .reservation{
+    font-size: 115%;
+    margin-left: 3%;
+}
+
+.required {
+    color: red;
+}
+
+/**
+*test
+ *
+.bouton p {
+    display:block;
+    width:150px;
+    line-height:50px;
+    text-align:center;
+    vertical-align:middle;
+    background:white no-repeat;
+    color:white;
+    text-decoration:none;
+}
+.bouton p:hover {
+    background: #333333;
+    color: white;
+}
+*/
