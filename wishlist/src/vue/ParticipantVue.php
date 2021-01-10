@@ -26,7 +26,7 @@ class ParticipantVue
      */
     const ITEM_SEUL = 3;
 
-    const ALERT_BOX = 4;
+    const ALERT = 4;
 
     /**
      * ParticipantVue constructor.
@@ -152,10 +152,8 @@ END;
     public function messageAlertBox($vars): string
     {
         $html = <<<END
-<script LANGUAGE='JavaScript'>
-    window.alert('{$vars['message']}');
-    window.location.href='{$vars['url']}';
-    </script>
+<p class="message">{$vars['message']}</p>
+<button onclick="window.location.href='{$vars['url']}'">Ok</button>
 END;
         return $html;
 
@@ -172,7 +170,7 @@ END;
             case ParticipantVue::ITEM_SEUL:
                 $content = $this->unItemHtml($this->data[0], $vars);
                 break;
-            case ParticipantVue::ALERT_BOX:
+            case ParticipantVue::ALERT:
                 $content = $this->messageAlertBox($vars);
                 break;
         }

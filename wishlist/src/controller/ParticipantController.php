@@ -111,7 +111,7 @@ class ParticipantController
         ];
 
         $v = new ParticipantVue(null);
-        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::ALERT_BOX));
+        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::ALERT));
         return $rs;
     }
 }
