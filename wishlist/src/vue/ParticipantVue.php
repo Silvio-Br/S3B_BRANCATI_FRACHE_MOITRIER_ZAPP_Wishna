@@ -9,24 +9,27 @@ class ParticipantVue
     private $data;
 
     /**
-     * Constante correspondant à l'affichage d'un lien vers un item
+     * constante correspondante à l'affichage de la page home
      * @var int
      */
     const HOME = 1;
 
     /**
-     * Constante correspondant à l'affichage de la liste
+     * constante correspondante à l'affichage du contenu d'une liste
      * @var int
      */
     const LISTE_CONTENT = 2;
 
     /**
-     * Constante correspondante à l'affichage de la page d'un item
+     * constante correspondante à l'affichage de la page d'un item
      * @var int
      */
     const ITEM_SEUL = 3;
 
-    const ALERT = 4;
+    /**
+     * constante correspondante à o'affichage d'un message et d'un bouton de redirection
+     */
+    const MESSAGE = 4;
 
     /**
      * ParticipantVue constructor.
@@ -37,6 +40,10 @@ class ParticipantVue
         $this->data = $data;
     }
 
+    /**
+     * methode retournant le code HTML de la page home
+     * @return string
+     */
     private function pageHome(): string
     {
         $html = <<<END
@@ -48,6 +55,12 @@ END;
         return $html;
     }
 
+    /**
+     * methode retournant le code HTML du contenu d'une liste
+     * @param Liste $liste
+     * @param $vars
+     * @return string
+     */
     private function uneListeHtml(Liste $liste, $vars): string {
         $html = <<<END
 <section class="titreListe">
@@ -81,6 +94,12 @@ END;
         return $html;
     }
 
+    /**
+     * methode retournant le code HMTL de la page d'un item
+     * @param Item $item
+     * @param $v
+     * @return string
+     */
     private function unItemHtml(Item $item, $v): string {
         $reservation = " : Non";
         if ($item->reservation) {
@@ -105,11 +124,18 @@ END;
 END;
         if (!$item->reservation) {
             $_GET['id']=$item->id;
-            $html .= $this->insererFormulaire($v);
+            $html .= $this->unFormulaireReservation($v);
         }
         return $html;
     }
 
+    /**
+     * methode retournant le code HTML de la ligne d'un item dans le tableau d'affichage de la liste
+     * @param Item $item
+     * @param $basepath
+     * @param $url
+     * @return string
+     */
     private function unItem(Item $item, $basepath, $url): string {
         $reservation = "Non";
         $img = null;
@@ -133,7 +159,12 @@ END;
         return $html;
     }
 
-    private function insererFormulaire($v): string {
+    /**
+     * methode retournant le code HTML du formulaire de réservation d'un item
+     * @param $v
+     * @return string
+     */
+    private function unFormulaireReservation($v): string {
         $nom="";
         if (isset($_SESSION['nom'])) {
             $nom = $_SESSION['nom'];
@@ -149,7 +180,12 @@ END;
         return $html;
     }
 
-    public function messageAlertBox($vars): string
+    /**
+     * methode retournant le code HTML d'un message avec un bouton de redirection
+     * @param $vars
+     * @return string
+     */
+    public function unMessage($vars): string
     {
         $html = <<<END
 <p class="message">{$vars['message']}</p>
@@ -170,8 +206,8 @@ END;
             case ParticipantVue::ITEM_SEUL:
                 $content = $this->unItemHtml($this->data[0], $vars);
                 break;
-            case ParticipantVue::ALERT:
-                $content = $this->messageAlertBox($vars);
+            case ParticipantVue::MESSAGE:
+                $content = $this->unMessage($vars);
                 break;
         }
 
