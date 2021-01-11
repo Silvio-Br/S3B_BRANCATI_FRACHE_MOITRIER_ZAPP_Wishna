@@ -49,7 +49,7 @@ class CreateurController
             $v = new CreateurVue([$liste]);
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
-                'share' => "http://$_SERVER[HTTP_HOST]/Wishna/wishlist/liste/{$liste->token}"
+                'share' => $this->c->router->pathFor('partagerListe', ['token_admin'=>$liste->tokenAdmin])
             ];
 
             $tabItems = array();
@@ -157,7 +157,7 @@ END;
             ];
         }
         $v = new CreateurVue(null);
-        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
         return $rs;
     }
 
@@ -213,7 +213,7 @@ END;
         ];
 
         $v = new CreateurVue(null);
-        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
         return $rs;
     }
 
@@ -240,7 +240,7 @@ END;
         ];
 
         $v = new CreateurVue(null);
-        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
         return $rs;
     }
 
@@ -283,7 +283,7 @@ END;
         ];
 
         $v = new CreateurVue(null);
-        $rs->getBody()->write($v->render($htmlvars, CreateurVue::ALERT_BOX));
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
         return $rs;
     }
 
@@ -295,6 +295,23 @@ END;
 
         $v = new CreateurVue(null);
         $rs->getBody()->write($v->render($htmlvars, CreateurVue::FORM));
+        return $rs;
+    }
+
+    public function displayPartager(Request $rq, Response $rs, array $args): Response
+    {
+        $liste = Liste::query()->where('tokenAdmin', '=', $args['token_admin'])->firstOrFail();
+
+        $urlDetailListe = $this->c->router->pathFor('detailListe', ['token_admin'=>$liste->tokenAdmin]);
+
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'share' => "{$liste->token}",
+            'url' => $urlDetailListe
+        ];
+
+        $v = new CreateurVue(null);
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::PARTAGER));
         return $rs;
     }
 

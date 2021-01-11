@@ -14,8 +14,10 @@ class CreateurVue
     const MODIFIER_ITEM = 3;
     const MODIFIER_LISTE = 4;
     const FORM = 5;
-    const ALERT_BOX = 6;
+    const MESSAGE = 6;
     const AJOUTER_ITEM = 7;
+    const PARTAGER = 8;
+
 
     /**
      * CreateurVue constructor.
@@ -77,7 +79,7 @@ END;
             {$vars['ajouter']}
          </section>
          <section class='partager'>
-            <button onclick="alert('Envoyez ce lien pour partager votre liste : {$vars['share']}')">Partager ma liste</button>
+            <button onclick="window.location.href='{$vars['share']}'">Partager ma liste</button>
          </section>
 END;
         return $html;
@@ -177,18 +179,25 @@ END;
         return $html;
     }
 
-    public function messageAlertBox($vars): string
+    public function unMessage($vars): string
     {
         $html = <<<END
-<script LANGUAGE='JavaScript'>
-    window.alert('{$vars['message']}');
-    window.location.href='{$vars['url']}';
-    </script>
+<p class="message">{$vars['message']}</p>
+<button onclick="window.location.href='{$vars['url']}'">Ok</button>
 END;
         return $html;
 
     }
 
+    public function partagerListe($vars): string
+    {
+        $html = <<<END
+<p class="message">Voici le token de votre liste à partager: {$vars['share']}</p>
+<button onclick="window.location.href='{$vars['url']}'">Ok</button>
+END;
+        return $html;
+
+    }
 
     public function render(array $vars, int $typeAffichage): string {
         switch ($typeAffichage) {
@@ -207,11 +216,14 @@ END;
             case CreateurVue::FORM:
                 $content = $this->unFormulaireHtml();
                 break;
-            case CreateurVue::ALERT_BOX:
-                $content = $this->messageAlertBox($vars);
+            case CreateurVue::MESSAGE:
+                $content = $this->unMessage($vars);
                 break;
             case CreateurVue::AJOUTER_ITEM:
                 $content = $this->unFormulaireAjouterItem();
+                break;
+            case CreateurVue::PARTAGER:
+                $content = $this->partagerListe($vars);
                 break;
         }
         $html = <<<END

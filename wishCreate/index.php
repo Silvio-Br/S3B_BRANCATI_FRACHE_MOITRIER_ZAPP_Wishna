@@ -68,4 +68,9 @@ $app->post("/create[/]", function (Request $rq, Response $rs, array $args) {
     $c->postCreate($rq,$rs,$args);
 });
 
+$app->get('/meslistes/{token_admin}/partager[/]', function(Request $rq, Response $rs, array $args) {
+    $c = new CreateurController($this);
+    return $c->displayPartager($rq,$rs,$args);
+})->setName('partagerListe');
+
 $app->run();
