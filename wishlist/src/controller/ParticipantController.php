@@ -66,7 +66,8 @@ class ParticipantController
 
         try {
             $htmlvars = [
-                'basepath'=> $rq->getUri()->getBasePath()
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'token_liste' => $args['token_liste']
             ];
 
             $liste = Liste::liste($args['token_liste'])->firstOrFail();
@@ -86,7 +87,7 @@ class ParticipantController
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'url' => $this->c->router->pathFor('home'),
-                'message' => "Liste inexistante, retournez à l'accueil pour réessayer"
+                'message' => "Liste inexistante, retournez à l'accueil pour réessayer",
             ];
             $v = new ParticipantVue(null);
             $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
@@ -111,7 +112,8 @@ class ParticipantController
             ])->firstOrFail();
 
             $htmlvars = [
-                'basepath'=> $rq->getUri()->getBasePath()
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'token_liste' => $args['token_liste']
             ];
 
             $v = new ParticipantVue([$item]);

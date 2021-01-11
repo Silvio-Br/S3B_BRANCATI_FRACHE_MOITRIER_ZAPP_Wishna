@@ -80,7 +80,7 @@ END;
                 </tr>
 END;
             for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
-                $html .= $this->unItem($vars['objets'][$i][0], $vars['basepath'], $vars['objets'][$i][1]);
+                $html .= $this->unItem($vars['objets'][$i][0], $vars['basepath'], $vars['objets'][$i][1], $vars['token_liste']);
             }
             $html .= <<<END
                 
@@ -103,7 +103,16 @@ END;
     private function unItemHtml(Item $item, $v): string {
         $reservation = " : Non";
         if ($item->reservation) {
-            $reservation = " par $item->nom_reservation";
+            if (isset($_COOKIE['createur'])) {
+                $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
+                if (in_array($v['token_liste'], $arrayTokenCreateur)) {
+                    $reservation = " : Oui";
+                } else {
+                    $reservation = " par $item->nom_reservation";
+                }
+            } else {
+                $reservation = " par $item->nom_reservation";
+            }
         }
 
         $img = null;
@@ -136,7 +145,7 @@ END;
      * @param $url
      * @return string
      */
-    private function unItem(Item $item, $basepath, $url): string {
+    private function unItem(Item $item, $basepath, $url, $token): string {
         $reservation = "Non";
         $img = null;
         if (!(substr($item->img, 0,4) == "http") && !(substr($item->img, 0,4) == "www") ) {
@@ -146,7 +155,16 @@ END;
         }
 
         if ($item->reservation) {
-            $reservation = "$item->nom_reservation";
+            if (isset($_COOKIE['createur'])) {
+                $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
+                if (in_array($token, $arrayTokenCreateur)) {
+                    $reservation = "Oui";
+                } else {
+                    $reservation = "$item->nom_reservation";
+                }
+            } else {
+                $reservation = "$item->nom_reservation";
+            }
         }
         $html = <<<END
             

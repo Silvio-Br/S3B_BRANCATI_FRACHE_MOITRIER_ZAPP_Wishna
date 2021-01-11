@@ -205,10 +205,16 @@ END;
 
         $liste->save();
 
+        if (!isset($_COOKIE['createur'])) {
+            setcookie("createur", $token, strtotime($data['date']), "/S3B_BRANCATI_FRACHE_MOITRIER_ZAPP_Wishna/");
+        } else {
+            setcookie("createur", $_COOKIE['createur']."-{$token}", strtotime($data['date']), "/S3B_BRANCATI_FRACHE_MOITRIER_ZAPP_Wishna/");
+        }
+
         $url = $this->c->router->pathFor('detailListe', ['token_admin'=>$tokenAdmin]);
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
-            'message' => "Utilisez ce lien pour modifier votre liste : http://$_SERVER[HTTP_HOST]/Wishna/wishcreate/meslistes/{$tokenAdmin}",
+            'message' => "Utilisez ce token pour modifier votre liste : {$tokenAdmin}",
             'url' => $url
         ];
 
