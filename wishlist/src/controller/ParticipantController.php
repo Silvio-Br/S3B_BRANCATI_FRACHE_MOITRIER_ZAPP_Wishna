@@ -65,9 +65,18 @@ class ParticipantController
     public function displayContentList(Request $rq, Response $rs, array $args): Response {
 
         try {
+
+            $etreCreateur = false;
+            if (isset($_COOKIE['createur'])) {
+                $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
+                if (in_array($args['token_liste'], $arrayTokenCreateur)) {
+                    $etreCreateur = true;
+                }
+            }
+
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
-                'token_liste' => $args['token_liste']
+                'etreCreateur' => $etreCreateur
             ];
 
             $liste = Liste::liste($args['token_liste'])->firstOrFail();
@@ -111,9 +120,17 @@ class ParticipantController
                 ['liste_id', '=', $liste->no]
             ])->firstOrFail();
 
+            $etreCreateur = false;
+            if (isset($_COOKIE['createur'])) {
+                $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
+                if (in_array($args['token_liste'], $arrayTokenCreateur)) {
+                    $etreCreateur = true;
+                }
+            }
+
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
-                'token_liste' => $args['token_liste']
+                'etreCreateur' => $etreCreateur
             ];
 
             $v = new ParticipantVue([$item]);

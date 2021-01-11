@@ -80,7 +80,7 @@ END;
                 </tr>
 END;
             for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
-                $html .= $this->unItem($vars['objets'][$i][0], $vars['basepath'], $vars['objets'][$i][1], $vars['token_liste']);
+                $html .= $this->unItem($vars['objets'][$i][0], $vars['basepath'], $vars['objets'][$i][1], $vars['etreCreateur']);
             }
             $html .= <<<END
                 
@@ -102,17 +102,10 @@ END;
      */
     private function unItemHtml(Item $item, $v): string {
         $reservation = " : Non";
-        if ($item->reservation) {
-            if (isset($_COOKIE['createur'])) {
-                $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
-                if (in_array($v['token_liste'], $arrayTokenCreateur)) {
-                    $reservation = " : Oui";
-                } else {
-                    $reservation = " par $item->nom_reservation";
-                }
-            } else {
-                $reservation = " par $item->nom_reservation";
-            }
+        if ($item->reservation && !$v['etreCreateur']) {
+            $reservation = " par $item->nom_reservation";
+        } elseif ($item->reservation && $v['etreCreateur']) {
+            $reservation = " : Oui";
         }
 
         $img = null;
@@ -145,7 +138,7 @@ END;
      * @param $url
      * @return string
      */
-    private function unItem(Item $item, $basepath, $url, $token): string {
+    private function unItem(Item $item, $basepath, $url, $etreCreateur): string {
         $reservation = "Non";
         $img = null;
         if (!(substr($item->img, 0,4) == "http") && !(substr($item->img, 0,4) == "www") ) {
@@ -154,18 +147,12 @@ END;
             $img = $item->img;
         }
 
-        if ($item->reservation) {
-            if (isset($_COOKIE['createur'])) {
-                $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
-                if (in_array($token, $arrayTokenCreateur)) {
-                    $reservation = "Oui";
-                } else {
-                    $reservation = "$item->nom_reservation";
-                }
-            } else {
-                $reservation = "$item->nom_reservation";
-            }
+        if ($item->reservation && !$etreCreateur) {
+            $reservation = "$item->nom_reservation";
+        } elseif ($item->reservation && $v['etreCreateur']) {
+            $reservation = "Oui";
         }
+
         $html = <<<END
             
                 <tr>
