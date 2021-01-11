@@ -172,7 +172,7 @@ END;
             <p>Description<span class="required">*</span> : <input type="text" name="desc" required/></p>
             <p>Prix<span class="required">*</span> : <input type="number" min="0" name="prix" required/></p>
             <p>Url : <input type="url" name="url"/></p>
-            <p>Image : <input name="img" value="web/img/"/></p>
+            <p>Image : <input name="img" value="web/img/"/><input type="file" name="fichier"/> </p>
             <p><input type="submit" value="OK"></p>
         </form>
 END;
