@@ -149,7 +149,7 @@ END;
 
         if ($item->reservation && !$etreCreateur) {
             $reservation = "$item->nom_reservation";
-        } elseif ($item->reservation && $v['etreCreateur']) {
+        } elseif ($item->reservation && $etreCreateur) {
             $reservation = "Oui";
         }
 
