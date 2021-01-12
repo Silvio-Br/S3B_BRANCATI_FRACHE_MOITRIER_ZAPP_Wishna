@@ -15,10 +15,10 @@ class ParticipantVue
     const HOME = 1;
 
     /**
-     * constante correspondante à l'affichage du contenu d'une liste
+     * constante correspondante à l'affichage du contenu d'une liste non expirée
      * @var int
      */
-    const LISTE_CONTENT = 2;
+    const LISTE_CONTENT_NON_EXPIRE = 2;
 
     /**
      * constante correspondante à l'affichage de la page d'un item
@@ -30,6 +30,12 @@ class ParticipantVue
      * constante correspondante à o'affichage d'un message et d'un bouton de redirection
      */
     const MESSAGE = 4;
+
+    /**
+     * constante correspondante à l'affichage du contenu d'une liste expirée
+     * @var int
+     */
+    const LISTE_CONTENT_EXPIRE = 5;
 
     /**
      * ParticipantVue constructor.
@@ -61,7 +67,7 @@ END;
      * @param $vars
      * @return string
      */
-    private function uneListeHtml(Liste $liste, $vars): string {
+    private function uneListeHtmlNonExpiree(Liste $liste, $vars): string {
         $html = <<<END
 <section class="titreListe">
             <h3 class="nom">{$liste->titre}</h3>
@@ -81,6 +87,40 @@ END;
 END;
             for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
                 $html .= $this->unItem($vars['objets'][$i][0], $vars['basepath'], $vars['objets'][$i][1], $vars['etreCreateur']);
+            }
+            $html .= <<<END
+                
+              </table>
+          </section>
+END;
+
+        } else {
+            $html .= "<p>Aucuns items dans cette liste</p>";
+        }
+        return $html;
+    }
+
+    private function uneListeHtmlExpiree(Liste $liste, $vars): string {
+        $html = <<<END
+<section class="titreListe">
+            <h3 class="nom">{$liste->titre}</h3>
+            <p class="desc">{$liste->description}</p>
+        </section>
+END;
+        if (sizeOf($vars['objets'])>0) {
+            $html .= <<<END
+                
+        <section class="tableau">
+            <table>
+                <tr>
+                    <th>Nom</th>
+                    <th>Image</th>
+                    <th>Nom participant</th>
+                    <th>Message</th>
+                </tr>
+END;
+            for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
+                $html .= $this->unItemExpire($vars['objets'][$i][0], $vars['basepath'], $vars['objets'][$i][1]);
             }
             $html .= <<<END
                 
@@ -124,7 +164,7 @@ END;
             <h4 class="reservation">Réservé$reservation</h4>
         </section>
 END;
-        if (!$item->reservation) {
+        if (!$item->reservation && !$v['expire']) {
             $_GET['id']=$item->id;
             $html .= $this->unFormulaireReservation($v);
         }
@@ -161,6 +201,31 @@ END;
                     <td><p class="reservation">$reservation</p></td>
                 </tr>
 END;
+        return $html;
+    }
+
+    private function unItemExpire(Item $item, $basepath, $url): string {
+        $html = "";
+        if ($item->reservation) {
+            $reservation = "$item->nom_reservation";
+            $img = null;
+            if (!(substr($item->img, 0,4) == "http") && !(substr($item->img, 0,4) == "www") ) {
+                $img = "{$basepath}/web/img/$item->img";
+            } else {
+                $img = $item->img;
+            }
+
+            $html = <<<END
+            
+                <tr>
+                    <td><a href="$url">$item->nom</a></td>
+                    <td><img class="imageItem" alt="image" src="$img"></td>
+                    <td><p class="nom">$reservation</p></td>
+                    <td><p class="nom">$item->message_reservation</p></td>
+                </tr>
+END;
+        }
+
         return $html;
     }
 
@@ -205,8 +270,11 @@ END;
             case ParticipantVue::HOME:
                 $content = $this->pageHome();
                 break;
-            case ParticipantVue::LISTE_CONTENT:
-                $content = $this->uneListeHtml($this->data[0], $vars);
+            case ParticipantVue::LISTE_CONTENT_NON_EXPIRE:
+                $content = $this->uneListeHtmlNonExpiree($this->data[0], $vars);
+                break;
+            case ParticipantVue::LISTE_CONTENT_EXPIRE:
+                $content = $this->uneListeHtmlExpiree($this->data[0], $vars);
                 break;
             case ParticipantVue::ITEM_SEUL:
                 $content = $this->unItemHtml($this->data[0], $vars);

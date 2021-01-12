@@ -2,6 +2,7 @@
 
 namespace wishlist\controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Date;
 use Slim\Container;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -66,17 +67,9 @@ class ParticipantController
 
         try {
 
-            $etreCreateur = false;
-            if (isset($_COOKIE['createur'])) {
-                $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
-                if (in_array($args['token_liste'], $arrayTokenCreateur)) {
-                    $etreCreateur = true;
-                }
-            }
-
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
-                'etreCreateur' => $etreCreateur
+                'etreCreateur' => false
             ];
 
             $liste = Liste::liste($args['token_liste'])->firstOrFail();
@@ -89,8 +82,26 @@ class ParticipantController
             }
             $htmlvars['objets'] = $tabItems;
 
-            $v = new ParticipantVue([$liste]);
-            $rs->getBody()->write($v->render($htmlvars, ParticipantVue::LISTE_CONTENT));
+            $expiration = $liste->expiration;
+            $origin = new \DateTime('now');
+            $target = new \DateTime("{$expiration}");
+            $interval = $origin->diff($target);
+
+            if (intval($interval->format('%R%a')) < 0) {
+                $v = new ParticipantVue([$liste]);
+                $rs->getBody()->write($v->render($htmlvars, ParticipantVue::LISTE_CONTENT_EXPIRE));
+            } else {
+                if (isset($_COOKIE['createur'])) {
+                    $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
+                    if (in_array($args['token_liste'], $arrayTokenCreateur)) {
+                        $htmlvars['etreCreateur'] = true;
+                    }
+                }
+
+                $v = new ParticipantVue([$liste]);
+                $rs->getBody()->write($v->render($htmlvars, ParticipantVue::LISTE_CONTENT_NON_EXPIRE));
+
+            }
             return $rs;
         } catch (ModelNotFoundException $e) {
             $htmlvars = [
@@ -112,7 +123,7 @@ class ParticipantController
      * @return Response
      */
     public function displayItem(Request $rq, Response $rs, array $args):Response {
-
+        
         try {
             $liste = Liste::liste($args['token_liste'])->firstOrFail();
             $item = Item::query()->where([
@@ -128,9 +139,15 @@ class ParticipantController
                 }
             }
 
+            $expiration = $liste->expiration;
+            $origin = new \DateTime('now');
+            $target = new \DateTime("{$expiration}");
+            $interval = $origin->diff($target);
+
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
-                'etreCreateur' => $etreCreateur
+                'etreCreateur' => $etreCreateur,
+                'expire' => intval($interval->format('%R%a')) < 0
             ];
 
             $v = new ParticipantVue([$item]);
