@@ -9,6 +9,7 @@ use Slim\Http\Request;
 use wishlist\models\Item;
 use wishlist\models\Liste;
 use wishlist\vue\ParticipantVue;
+use wishlist\models\Compte;
 class ParticipantController
 {
 
@@ -39,6 +40,53 @@ class ParticipantController
         ];
 
         $rs->getBody()->write($v->render($htmlvars, ParticipantVue::HOME));
+        return $rs;
+    }
+
+    public function displayConnexion(Request $rq, Response $rs, array $args): Response
+    {
+        $v = new ParticipantVue(null);
+
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::CONNECT));
+        return $rs;
+    }
+
+    public function postConnexion(Request $rq, Response $rs, array $args): Response
+    {
+        $data = $rq->getParsedBody();
+        $userName = filter_var($data['user_name'], FILTER_SANITIZE_STRING);
+        $mdp = filter_var($data['pass_word'], FILTER_SANITIZE_STRING);
+
+        Compte::login($userName, $mdp);
+
+        $v = new ParticipantVue(null);
+
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        if ($_SESSION['isConnect']){
+            header("Location: {$this->c->router->pathFor('home')}");
+            exit();
+        } else {
+            $rs->getBody()->write($v->render($htmlvars, ParticipantVue::CONNECT));
+        }
+        return $rs;
+    }
+
+    public function displayInscription(Request $rq, Response $rs, array $args): Response
+    {
+        $v = new ParticipantVue(null);
+
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::INSCRIPTION));
         return $rs;
     }
 

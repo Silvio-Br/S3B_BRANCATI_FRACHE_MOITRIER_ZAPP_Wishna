@@ -1,5 +1,6 @@
 <?php
 session_start();
+if (!isset($_SESSION['isConnect'])) $_SESSION['isConnect'] = false;
 use Slim\App;
 use Slim\Container;
 use Slim\Http\Request;
@@ -18,6 +19,30 @@ $app->get('/', function(Request $rq, Response $rs, array $args): Response {
     $c = new ParticipantController($this);
     return $c->displayHome($rq,$rs,$args);
 })->setName('home');
+
+
+
+$app->get('/connexion', function(Request $rq, Response $rs, array $args): Response {
+    $c = new ParticipantController($this);
+    return $c->displayConnexion($rq,$rs,$args);
+})->setName('connect');
+
+$app->post('/connexion', function (Request $rq, Response $rs, array $args) {
+    $c = new ParticipantController($this);
+    $c->postConnexion($rq,$rs,$args);
+});
+
+$app->get('/inscription', function(Request $rq, Response $rs, array $args): Response {
+    $c = new ParticipantController($this);
+    return $c->displayInscription($rq,$rs,$args);
+})->setName('inscription');
+
+$app->get('/monespace', function(Request $rq, Response $rs, array $args): Response {
+    $c = new ParticipantController($this);
+    return $c->displayConnexion($rq,$rs,$args);
+})->setName('espace');
+
+
 
 // methode post permettant d'acceder à la liste à partir du formulaire
 $app->post('/', function (Request $rq, Response $rs, array $args) {

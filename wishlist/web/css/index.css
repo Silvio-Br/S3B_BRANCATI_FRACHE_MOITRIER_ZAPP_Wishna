@@ -64,6 +64,12 @@ form{
     color: red;
 }
 
+.statut{
+    position: fixed;
+    bottom: 5%;
+    right: 1%;
+}
+
 /**
 *test
  *

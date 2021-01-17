@@ -31,6 +31,9 @@ class ParticipantVue
      */
     const MESSAGE = 4;
 
+    const CONNECT = 5;
+    const INSCRIPTION = 6;
+
     /**
      * constante correspondante à l'affichage du contenu d'une liste expirée
      * @var int
@@ -57,6 +60,54 @@ class ParticipantVue
                  <p>Token de la liste<span class="required">*</span> : <input type="text" name="token" required/></p>
                  <p><input class="bouton" type="submit" value="OK"></p>
             </form>
+END;
+        return $html;
+    }
+
+    /**
+     * Affiche la page de connexion pour l'utilisateur
+     * @return string
+     */
+    private function pageConnexion(): string
+    {
+        $html = <<<END
+        <form method="post">
+            <h2>   <U>Page de connexion</U></h2>
+            <div>
+                <label for="Username">Votre login :<span class="required">*</span></label>
+                <input type="text" id="Username" name="user_name" required>
+            </div>
+            <div>
+                <label for="Password">Votre mot de passe :<span class="required">*</span></label>
+                <input type="text" id="Password" name="pass_word" required>
+            </div>
+          
+            <p><input class="bouton" type="submit" value="Connexion"></p>
+        </form>
+END;
+        return $html;
+    }
+
+    /**
+     * Affiche la page de d'inscription pour l'utilisateur
+     * @return string
+     */
+    private function pageInscription(): string
+    {
+        $html = <<<END
+        <form method="post">
+            <h2>   <U>Page de d'inscription</U></h2>
+            <div>
+                <label for="Username">Saisir votre login :<span class="required">*</span></label>
+                <input type="text" id="Username" name="user_name" required>
+            </div>
+            <div>
+                <label for="Password">Saisir votre mot de passe :<span class="required">*</span></label>
+                <input type="text" id="Password" name="pass_word" required>
+            </div>
+          
+            <p><input class="bouton" type="submit" value="S'inscrire"></p>
+        </form>
 END;
         return $html;
     }
@@ -236,7 +287,10 @@ END;
      */
     private function unFormulaireReservation($v): string {
         $nom="";
-        if (isset($_SESSION['nom'])) {
+        if ($_SESSION['isConnect']) {
+            $nom=$_SESSION['userName'];
+        }
+        else if (isset($_SESSION['nom'])) {
             $nom = $_SESSION['nom'];
         }
         $html = <<<END
@@ -266,6 +320,12 @@ END;
     }
 
     public function render(array $vars, int $typeAffichage): string {
+        if ($_SESSION['isConnect']) $htmlAddOn = <<<END
+<div class="statut">Connecté en tant que : {$_SESSION['userName']}</div>
+END;
+        else $htmlAddOn = <<<END
+<div class="statut">Non connecté</div>
+END;
         switch ($typeAffichage) {
             case ParticipantVue::HOME:
                 $content = $this->pageHome();
@@ -282,6 +342,12 @@ END;
             case ParticipantVue::MESSAGE:
                 $content = $this->unMessage($vars);
                 break;
+            case ParticipantVue::CONNECT:
+                $content = $this->pageConnexion();
+                break;
+            case ParticipantVue::INSCRIPTION:
+                $content = $this->pageInscription();
+                break;
         }
 
         $html = <<<END
@@ -293,10 +359,11 @@ END;
     </head>
     <body>
         $content
+        $htmlAddOn
     </body>
 </html>
 END;
-
         return $html;
     }
+
 }
