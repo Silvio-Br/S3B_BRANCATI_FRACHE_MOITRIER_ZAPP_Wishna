@@ -37,7 +37,7 @@ class ParticipantController
             'basepath' => $rq->getUri()->getBasePath()
         ];
 
-        $listes = Liste::listePublique()->get();
+        $listes = Liste::listePublique()->orderBy('expiration')->get();
 
         $tabListes = array();
         foreach ($listes as $liste) {
