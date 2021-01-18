@@ -193,6 +193,11 @@ END;
         $titre = filter_var($data['titre'], FILTER_SANITIZE_STRING);
         $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
 
+        $publique = '0';
+        if (isset($data['public'])) {
+            $publique = '1';
+        }
+
         $token = bin2hex(random_bytes(8));
         $tokenAdmin = bin2hex(random_bytes(8));
 
@@ -202,6 +207,7 @@ END;
         $liste->expiration = $data['date'];
         $liste->token = $token;
         $liste->tokenAdmin = $tokenAdmin;
+        $liste->etrePublique = $publique;
 
         $liste->save();
 

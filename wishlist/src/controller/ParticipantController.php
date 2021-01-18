@@ -33,11 +33,20 @@ class ParticipantController
      */
     public function displayHome(Request $rq, Response $rs, array $args): Response
     {
-        $v = new ParticipantVue(null);
-
         $htmlvars = [
             'basepath' => $rq->getUri()->getBasePath()
         ];
+
+        $listes = Liste::listePublique()->get();
+
+        $tabListes = array();
+        foreach ($listes as $liste) {
+            $url = $this->c->router->pathFor('detailListe', ['token_liste'=>$liste->token]);
+            array_push($tabListes, [$liste, $url]);
+        }
+        $htmlvars['objets'] = $tabListes;
+
+        $v = new ParticipantVue(null);
 
         $rs->getBody()->write($v->render($htmlvars, ParticipantVue::HOME));
         return $rs;

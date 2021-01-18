@@ -24,6 +24,15 @@ class Liste extends Model
     }
 
     /**
+     * methode retournant les listes étant publiques
+     * @return mixed
+     */
+    public static function listePublique()
+    {
+        return Liste::where([['etrePublique', '=', '1'], ['expiration', '>=', new \DateTime("now")]]);
+    }
+
+    /**
      * methode retournant les items appartenant à cette liste
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

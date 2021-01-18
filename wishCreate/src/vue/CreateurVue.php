@@ -158,6 +158,7 @@ END;
             <p>Titre<span class="required">*</span> : <input type="text" name="titre" required/></p>
             <p>Description<span class="required">*</span> : <input type="text" name="desc" required/></p>
             <p>Date d'expiration<span class="required">*</span> : <input type="date" name="date" min="{$date}" required/></p>
+            <p>Mettre ma liste en publique <input type="checkbox" value="Liste publique" name="public"></p>
             <p><input type="submit" value="OK"></p>
         </form>
 END;

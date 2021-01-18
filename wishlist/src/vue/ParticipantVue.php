@@ -53,13 +53,27 @@ class ParticipantVue
      * methode retournant le code HTML de la page home
      * @return string
      */
-    private function pageHome(): string
+    private function pageHome($vars): string
     {
         $html = <<<END
         <form method="post">
                  <p>Token de la liste<span class="required">*</span> : <input type="text" name="token" required/></p>
                  <p><input class="bouton" type="submit" value="OK"></p>
             </form>
+<h1>Les listes publiques du moment</h1>
+<table>
+    <tr>
+        <th>Nom</th>
+        <th>Date d'expiration</th>
+    </tr>
+END;
+        for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
+            $html .= $this->uneListe($vars['objets'][$i][0], $vars['objets'][$i][1]);
+        }
+        $html .= <<<END
+                
+              </table>
+          </section>
 END;
         return $html;
     }
@@ -255,6 +269,17 @@ END;
         return $html;
     }
 
+    private function uneListe(Liste $liste, $url): string {
+        $html = <<<END
+            
+                <tr>
+                    <td><a href="$url">$liste->titre</a></td>
+                    <td><p class="reservation">$liste->expiration</p></td>
+                </tr>
+END;
+        return $html;
+    }
+
     private function unItemExpire(Item $item, $basepath, $url): string {
         $html = "";
         if ($item->reservation) {
@@ -328,7 +353,7 @@ END;
 END;
         switch ($typeAffichage) {
             case ParticipantVue::HOME:
-                $content = $this->pageHome();
+                $content = $this->pageHome($vars);
                 break;
             case ParticipantVue::LISTE_CONTENT_NON_EXPIRE:
                 $content = $this->uneListeHtmlNonExpiree($this->data[0], $vars);
