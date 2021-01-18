@@ -30,10 +30,15 @@ class CreateurVue
 
     private function pageHome(): string
     {
+       // <p><input class="bouton" type="submit" value="OK"></p>
         $html = <<<END
         <form method="post">
                  <p>Token de la liste : <input type="text" name="token" required/></p>
-                 <p><input class="bouton" type="submit" value="OK"></p>
+                 <p><input type="submit" value="OK" name="bouton"></p>
+            </form>
+
+        <form method="post">
+                 <p><input type="submit" value="Créer une nouvelle liste" name="bouton"></p>
             </form>
 END;
         return $html;

@@ -20,7 +20,7 @@ $app->get('/', function(Request $rq, Response $rs, array $args): Response {
 
 $app->post('/', function (Request $rq, Response $rs, array $args) {
     $c = new CreateurController($this);
-    $c->postAccederListe($rq,$rs,$args);
+    $c->postHome($rq,$rs,$args);
 });
 
 $app->get('/meslistes/{token_admin}[/]', function(Request $rq, Response $rs, array $args) {

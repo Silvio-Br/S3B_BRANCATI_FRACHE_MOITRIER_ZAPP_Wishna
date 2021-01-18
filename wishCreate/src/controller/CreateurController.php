@@ -33,12 +33,18 @@ class CreateurController
         return $rs;
     }
 
-    public function postAccederListe(Request $rq, Response $rs, array $args)
+    public function postHome(Request $rq, Response $rs, array $args)
     {
-        $data = $rq->getParsedBody();
-        $token = filter_var($data['token'], FILTER_SANITIZE_STRING);
-        header("Location: {$this->c->router->pathFor('detailListe', ['token_admin'=>$token])}");
-        exit();
+        if ($_POST['bouton'] == "OK") {
+            $data = $rq->getParsedBody();
+            $token = filter_var($data['token'], FILTER_SANITIZE_STRING);
+            header("Location: {$this->c->router->pathFor('detailListe', ['token_admin'=>$token])}");
+            exit();
+        }
+        elseif ($_POST['bouton'] == "Créer une nouvelle liste"){
+            header("Location: {$this->c->router->pathFor('create')}");
+            exit();
+        }
     }
 
     public function displayListe(Request $rq, Response $rs, array $args): Response {
