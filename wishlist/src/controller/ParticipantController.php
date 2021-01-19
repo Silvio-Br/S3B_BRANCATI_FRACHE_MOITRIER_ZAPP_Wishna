@@ -149,6 +149,27 @@ class ParticipantController
         return $rs;
     }
 
+    public function displayEspace(Request $rq, Response $rs, array $args): Response
+    {
+        $v = new ParticipantVue(null);
+
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
+
+        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::INSCRIPTION));
+        return $rs;
+    }
+
+    public function postEspace(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+        $mdp = filter_var($data['pass_word'], FILTER_SANITIZE_STRING);
+        if ($mdp != null){
+            
+        }
+    }
+
     /**
      * suite à la validation du formulaire de la page home on redirige vers la page de la liste si existe
      * @param Request $rq

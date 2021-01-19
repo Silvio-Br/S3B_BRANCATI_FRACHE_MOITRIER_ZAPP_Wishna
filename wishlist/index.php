@@ -42,7 +42,7 @@ $app->post('/inscription', function (Request $rq, Response $rs, array $args) {
 
 $app->get('/monespace', function(Request $rq, Response $rs, array $args): Response {
     $c = new ParticipantController($this);
-    return $c->displayConnexion($rq,$rs,$args);
+    return $c->displayEspace($rq,$rs,$args);
 })->setName('espace');
 
 // methode post permettant d'acceder à la liste à partir du formulaire

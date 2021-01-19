@@ -39,6 +39,7 @@ class ParticipantVue
 
     const CONNECT = 6;
     const INSCRIPTION = 7;
+    const ESPACE = 8;
 
     /**
      * ParticipantVue constructor.
@@ -107,6 +108,24 @@ END;
      * Affiche la page de d'inscription pour l'utilisateur
      * @return string
      */
+    private function pageEspace(): string
+    {
+        $html = <<<END
+        <form method="post">
+            <h2>   <U>Votre espace personnel</U></h2>
+            <p>Vous êtes {$_SESSION['username']}</p>
+            <br>
+            <h5>  Changer de mot de passe ?</h5>
+            <label for="Password">Votre nouveau mot de passe :<span class="required">*</span></label>
+            <p><input class="bouton" type="submit" value="Modifier" name="bouton"></p>
+        </form>
+END;
+        return $html;
+    }
+    /**
+ * Affiche la page de d'inscription pour l'utilisateur
+ * @return string
+ */
     private function pageInscription(): string
     {
         $html = <<<END
@@ -379,6 +398,9 @@ END;
                 break;
             case ParticipantVue::INSCRIPTION:
                 $content = $this->pageInscription();
+                break;
+            case ParticipantVue::ESPACE:
+                $content = $this->pageEspace();
                 break;
         }
 
