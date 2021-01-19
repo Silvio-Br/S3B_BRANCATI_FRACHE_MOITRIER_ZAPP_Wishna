@@ -221,12 +221,15 @@ END;
         }
 
         $html = <<<END
-<form method="post">
+<form method="post" enctype="multipart/form-data">
             <p>Nom<span class="required">*</span> : <input type="text" name="nom" value="{$item->nom}" required/></p>
             <p>Description<span class="required">*</span> : <input type="text" name="desc" value="{$item->descr} "required/></p>
             <p>Prix<span class="required">*</span> : <input type="number" min="0" step="1" name="prix" value="{$prix}" required/></p>
             <p>Url : <input type="url" name="url" value="{$item->url}"/></p>
-            <p>Image : <input name="img" value="{$img}"/></p>
+           <p>Image :
+                <INPUT type= "radio" name="choix" value="lien-interne" checked> <input name="img-int" value="{$img}"/>
+                <INPUT type= "radio" name="choix" value="lien-externe"> <input type="file" name="img-ext"/>
+            </p>
             <p><input type="submit" value="OK" name="bouton"><input type="submit" value="Supprimer cet item" name="bouton"></p>
         </form>
 END;

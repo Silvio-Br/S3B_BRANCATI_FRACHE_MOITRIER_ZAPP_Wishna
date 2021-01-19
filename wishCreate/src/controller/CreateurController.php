@@ -140,16 +140,57 @@ class CreateurController
             $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
             $prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
             $url = filter_var($data['url'], FILTER_SANITIZE_URL);
-            $img = filter_var($data['img'], FILTER_SANITIZE_URL);
+            $imgInt = filter_var($data['img-int'], FILTER_SANITIZE_URL);
 
-            $racineImg = substr($img, 0,8);
-            if ($racineImg == "web/img/") {
-                $img = substr($img, 8);
+            $img = null;
+
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath()
+            ];
+
+            switch($_POST['choix']){
+                case "lien-interne":
+                    $racineImg = substr($imgInt, 0,8);
+                    if ($racineImg == "web/img/") {
+                        $img = substr($imgInt, 8);
+                    }
+                    if (strlen($img) == 0) {
+                        $img = "noImage.png";
+                    }
+                    break;
+                case "lien-externe":
+
+                    if(!empty($_FILES)){
+                        $file_name = $_FILES['img-ext']['name'];
+                        $file_extension = strrchr($file_name,".");
+
+                        $file_tmp_name = $_FILES['img-ext']['tmp_name'];
+                        $file_dest = 'web/img/'.$file_name;
+
+                        $extension_autorise= array('.jpg', '.png', '.JPG', '.PNG');
+
+                        if(in_array($file_extension, $extension_autorise)){
+                            if(move_uploaded_file($file_tmp_name, $file_dest)){
+                                $img=$file_name;
+                            } else {
+                                $v = new CreateurVue(null);
+                                $htmlvars['message'] = "Une erreur est survenue";
+                                $htmlvars['url']= $this->c->router->pathFor('detailListe', ['token_admin'=>$args['token_admin']]);;
+                                $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
+                                return $rs;
+                            }
+                        } else {
+                            $v = new CreateurVue(null);
+                            $htmlvars['message'] = "Seuls les images en PNG ou JPG sont acceptées";
+                            $htmlvars['url']= $this->c->router->pathFor('detailListe', ['token_admin'=>$args['token_admin']]);;
+                            $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
+                            return $rs;
+                        }
+                        copy($file_dest, "./../wishlist/web/img/{$file_name}");
+                    }
+                    break;
             }
 
-            if (strlen($img) == 0) {
-                $img = "noImage.png";
-            }
 
             $item->nom = $nom;
             $item->descr = $description;
@@ -158,11 +199,8 @@ class CreateurController
             $item->img = $img;
             $item->save();
 
-            $htmlvars = [
-                'basepath'=> $rq->getUri()->getBasePath(),
-                'message' => "Item modifié avec succès !",
-                'url' => $urlRedirection
-            ];
+            $htmlvars ['message'] = "Item modifié avec succès !";
+            $htmlvars['url'] = $urlRedirection;
 
         } elseif ($_POST['bouton'] == "Supprimer cet item") {
             $item->delete();
