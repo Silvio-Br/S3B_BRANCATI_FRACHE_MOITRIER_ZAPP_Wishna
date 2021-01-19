@@ -96,7 +96,13 @@ class CreateurController
 
             return $rs;
         } catch (ModelNotFoundException $e) {
-            echo "Liste inexistante";
+            $v = new CreateurVue(null);
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'message' => "Cette liste est inexistante",
+                'url' => $this->c->router->pathFor('home', [])
+            ];
+            $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
             return $rs;
         }
 
@@ -113,7 +119,11 @@ class CreateurController
             $v = new CreateurVue([$item]);
             $rs->getBody()->write($v->render($htmlvars, CreateurVue::MODIFIER_ITEM));
         } else {
-            echo "Vous ne pouvez pas modifier cet item, il est déjà réservé";
+            $v = new CreateurVue(null);
+            $htmlvars['message'] = "Vous ne pouvez plus modifier cet item";
+            $htmlvars['url'] = $this->c->router->pathFor('detailListe', ['token_admin'=>$args['token_admin']]);
+
+            $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
         }
 
         return $rs;
