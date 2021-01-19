@@ -17,6 +17,7 @@ class CreateurVue
     const MESSAGE = 6;
     const AJOUTER_ITEM = 7;
     const PARTAGER = 8;
+    const LIST_EXPIREE = 9;
 
 
     /**
@@ -30,7 +31,6 @@ class CreateurVue
 
     private function pageHome(): string
     {
-       // <p><input class="bouton" type="submit" value="OK"></p>
         $html = <<<END
         <form method="post">
                  <p>Token de la liste : <input type="text" name="token" required/></p>
@@ -90,6 +90,50 @@ END;
         return $html;
     }
 
+    private function uneListeExpireeHtml(Liste $liste, $vars): string {
+        $html = <<<END
+<section class="titreListe">
+            <h3 class="nom">{$liste->titre}</h3>
+            <p class="desc">{$liste->description}</p>
+            <p class="date">{$liste->expiration}</p>
+        </section>
+        <section class="modifier">
+            {$vars['modifier']}
+        </section>
+END;
+        if (sizeOf($vars['objets'])>0) {
+            $html .= <<<END
+                
+        <section class="tableau">
+            <table>
+                <tr>
+                    <th>Nom</th>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Message</th>
+                </tr>
+END;
+            for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
+                $html .= $this->unItemExpire($vars['objets'][$i][0], $vars['basepath']);
+            }
+            $html .= <<<END
+                
+              </table>
+          </section>
+END;
+        } else {
+            $html .= "<p>Aucuns items dans votre liste</p>";
+        }
+
+        $html .= <<<END
+
+         <section class='ajouter'>
+            {$vars['ajouter']}
+         </section>
+END;
+        return $html;
+    }
+
     private function unItem(Item $item, $basepath, $url): string {
         $reservation = "Non";
         if ($item->reservation) {
@@ -111,6 +155,25 @@ END;
                     <td>$titre</td>
                     <td><img class="imageItem" alt="image" src="{$img}"></td>
                     <td><p class="reservation">$reservation</p></td>
+                </tr>
+END;
+        return $html;
+    }
+
+    private function unItemExpire(Item $item, $basepath): string {
+        $img = null;
+        if (!(substr($item->img, 0,4) == "http") && !(substr($item->img, 0,4) == "www") ) {
+            $img = "{$basepath}/web/img/$item->img";
+        } else {
+            $img = $item->img;
+        }
+        $html = <<<END
+            
+                <tr>
+                    <td>$item->nom</td>
+                    <td><img class="imageItem" alt="image" src="{$img}"></td>
+                    <td><p class="reservation">$item->nom_reservation</p></td>
+                    <td><p class="reservation">$item->message_reservation</p></td>
                 </tr>
 END;
         return $html;
@@ -230,6 +293,9 @@ END;
                 break;
             case CreateurVue::PARTAGER:
                 $content = $this->partagerListe($vars);
+                break;
+            case CreateurVue::LIST_EXPIREE:
+                $content = $this->uneListeExpireeHtml($this->data[0], $vars);
                 break;
         }
         $html = <<<END

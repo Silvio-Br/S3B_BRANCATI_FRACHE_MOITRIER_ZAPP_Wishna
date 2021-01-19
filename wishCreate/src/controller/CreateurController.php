@@ -41,7 +41,7 @@ class CreateurController
             header("Location: {$this->c->router->pathFor('detailListe', ['token_admin'=>$token])}");
             exit();
         }
-        elseif ($_POST['bouton'] == "Créer une nouvelle liste"){
+        else if ($_POST['bouton'] == "Créer une nouvelle liste"){
             header("Location: {$this->c->router->pathFor('create')}");
             exit();
         }
@@ -71,7 +71,13 @@ class CreateurController
             $htmlvars['objets']=$tabItems;
 
             $htmlModifier = null;
-            if (!($liste->expiration >= new \DateTime("now") )) {
+
+            $expiration = $liste->expiration;
+            $origin = new \DateTime('now');
+            $target = new \DateTime("{$expiration}");
+            $interval = $origin->diff($target);
+
+            if (!(intval($interval->format('%R%a')) < 0)) {
                 $urlModifierListe = $this->c->router->pathFor('modifierListe', ['token_admin'=>$liste->tokenAdmin]);
                 $urlAjouterItem = $this->c->router->pathFor('ajouterItem', ['token_admin'=>$liste->tokenAdmin]);
                 $htmlModifier = <<<END
@@ -80,6 +86,9 @@ END;
                 $htmlAjouter = <<<END
 <button onclick="location.href='$urlAjouterItem'">Ajouter un item</button>
 END;
+                $htmlvars['modifier']=$htmlModifier;
+                $htmlvars['ajouter']=$htmlAjouter;
+                $rs->getBody()->write($v->render($htmlvars, CreateurVue::LISTE_AVEC_ITEMS));
             } else {
                 $htmlModifier = <<<END
 <p>Vous ne pouvez plus modifier cette liste</p>
@@ -87,12 +96,12 @@ END;
                 $htmlAjouter = <<<END
 <p>Vous ne pouvez plus ajouter d'items à cette liste</p>
 END;
-
+                $htmlvars['modifier']=$htmlModifier;
+                $htmlvars['ajouter']=$htmlAjouter;
+                $rs->getBody()->write($v->render($htmlvars, CreateurVue::LIST_EXPIREE));
             }
-            $htmlvars['modifier']=$htmlModifier;
-            $htmlvars['ajouter']=$htmlAjouter;
 
-            $rs->getBody()->write($v->render($htmlvars, CreateurVue::LISTE_AVEC_ITEMS));
+
             return $rs;
         } catch (ModelNotFoundException $e) {
             echo "Liste inexistante";
