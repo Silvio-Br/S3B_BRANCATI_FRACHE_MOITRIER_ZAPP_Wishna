@@ -20,8 +20,6 @@ $app->get('/', function(Request $rq, Response $rs, array $args): Response {
     return $c->displayHome($rq,$rs,$args);
 })->setName('home');
 
-
-
 $app->get('/connexion', function(Request $rq, Response $rs, array $args): Response {
     $c = new ParticipantController($this);
     return $c->displayConnexion($rq,$rs,$args);
@@ -29,7 +27,7 @@ $app->get('/connexion', function(Request $rq, Response $rs, array $args): Respon
 
 $app->post('/connexion', function (Request $rq, Response $rs, array $args) {
     $c = new ParticipantController($this);
-    $c->postConnexion($rq,$rs,$args);
+    $c->postVerifDeco($rq, $rs, $args);
 });
 
 $app->get('/inscription', function(Request $rq, Response $rs, array $args): Response {
@@ -42,12 +40,10 @@ $app->get('/monespace', function(Request $rq, Response $rs, array $args): Respon
     return $c->displayConnexion($rq,$rs,$args);
 })->setName('espace');
 
-
-
 // methode post permettant d'acceder à la liste à partir du formulaire
 $app->post('/', function (Request $rq, Response $rs, array $args) {
     $c = new ParticipantController($this);
-    $c->postAccederListe($rq,$rs,$args);
+    $c->postVerifDeco($rq, $rs, $args);
 });
 
 // page affichant le contenu d'une liste avec ses informations
@@ -65,7 +61,7 @@ $app->get('/liste/{token_liste}/item/{id_item}[/]', function(Request $rq, Respon
 // post permettant de réserver un item suite au remplissage du formulaire
 $app->post("/liste/{token_liste}/item/{id_item}[/]", function (Request $rq, Response $rs, array $args) {
     $c = new ParticipantController($this);
-    $c->postReserverItem($rq,$rs,$args);
+    $c->postVerifDeco($rq, $rs, $args);
 });
 
 $app->run();

@@ -21,24 +21,24 @@ class ParticipantVue
     const LISTE_CONTENT_NON_EXPIRE = 2;
 
     /**
+     * constante correspondante à l'affichage du contenu d'une liste expirée
+     * @var int
+     */
+    const LISTE_CONTENT_EXPIRE = 3;
+
+    /**
      * constante correspondante à l'affichage de la page d'un item
      * @var int
      */
-    const ITEM_SEUL = 3;
+    const ITEM_SEUL = 4;
 
     /**
      * constante correspondante à o'affichage d'un message et d'un bouton de redirection
      */
-    const MESSAGE = 4;
+    const MESSAGE = 5;
 
-    const CONNECT = 5;
-    const INSCRIPTION = 6;
-
-    /**
-     * constante correspondante à l'affichage du contenu d'une liste expirée
-     * @var int
-     */
-    const LISTE_CONTENT_EXPIRE = 5;
+    const CONNECT = 6;
+    const INSCRIPTION = 7;
 
     /**
      * ParticipantVue constructor.
@@ -58,7 +58,7 @@ class ParticipantVue
         $html = <<<END
         <form method="post">
                  <p>Token de la liste<span class="required">*</span> : <input type="text" name="token" required/></p>
-                 <p><input class="bouton" type="submit" value="OK"></p>
+                 <p><input class="bouton" type="submit" value="Visualiser" name="bouton"></p>
             </form>
 <h1>Les listes publiques du moment</h1>
 <table>
@@ -66,6 +66,7 @@ class ParticipantVue
         <th>Nom</th>
         <th>Date d'expiration</th>
     </tr>
+
 END;
         for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
             $html .= $this->uneListe($vars['objets'][$i][0], $vars['objets'][$i][1]);
@@ -96,7 +97,7 @@ END;
                 <input type="text" id="Password" name="pass_word" required>
             </div>
           
-            <p><input class="bouton" type="submit" value="Connexion"></p>
+            <p><input class="bouton" type="submit" value="Connexion" name="bouton"></p>
         </form>
 END;
         return $html;
@@ -120,7 +121,7 @@ END;
                 <input type="text" id="Password" name="pass_word" required>
             </div>
           
-            <p><input class="bouton" type="submit" value="S'inscrire"></p>
+            <p><input class="bouton" type="submit" value="S'inscrire" name="bouton"></p>
         </form>
 END;
         return $html;
@@ -323,7 +324,7 @@ END;
             <form method="post">
                  <p>Votre nom<span class="required">*</span> : <input type="text" name="nom" value="{$nom}" required/></p>
                  <p>Votre message : <input type="text" name="message" /></p>
-                 <p><input class="bouton" type="submit" value="OK"></p>
+                 <p><input class="bouton" type="submit" value="Reserver" name="bouton"></p>
             </form>
 END;
         return $html;
@@ -346,7 +347,13 @@ END;
 
     public function render(array $vars, int $typeAffichage): string {
         if ($_SESSION['isConnect']) $htmlAddOn = <<<END
-<div class="statut">Connecté en tant que : {$_SESSION['userName']}</div>
+<div class="statut">
+    <p>Connecté en tant que : {$_SESSION['userName']}</p>
+    <form method="post">
+        <input class="bouton" type="submit" value="Deconnexion" name="bouton">
+    </form>
+    
+</div>
 END;
         else $htmlAddOn = <<<END
 <div class="statut">Non connecté</div>
@@ -390,5 +397,4 @@ END;
 END;
         return $html;
     }
-
 }

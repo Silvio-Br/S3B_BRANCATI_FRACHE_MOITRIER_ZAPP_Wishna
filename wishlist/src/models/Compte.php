@@ -16,9 +16,16 @@ class Compte extends Model
 
     public static function login($user, $mdp) {
         $resultat = (Compte::where([['userName', '=', $user], ['password', '=', $mdp]])->get())->first();
-        if (isset ($resultat->iduser)) {
+        if (isset ($resultat->idCompte)) {
             $_SESSION['isConnect'] = true;
             $_SESSION['userName'] = $resultat->userName;
+        }
+    }
+
+    public static function logout() {
+        if ($_SESSION['isConnect']) {
+            $_SESSION['isConnect'] = false;
+            unset($_SESSION['userName']);
         }
     }
 

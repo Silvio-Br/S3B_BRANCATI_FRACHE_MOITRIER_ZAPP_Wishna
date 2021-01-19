@@ -87,6 +87,25 @@ class ParticipantController
         return $rs;
     }
 
+    public function postDeconnexion(Request $rq, Response $rs, array $args)
+    {
+        $data = $rq->getParsedBody();
+
+        $v = new ParticipantVue(null);
+
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'message' => "Vous êtes bien déconnecté",
+            'url' => $this->c->router->pathFor('home')
+        ];
+
+        Compte::logout();
+
+        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
+
+        return $rs;
+    }
+
     public function displayInscription(Request $rq, Response $rs, array $args): Response
     {
         $v = new ParticipantVue(null);
@@ -250,5 +269,23 @@ class ParticipantController
         $v = new ParticipantVue(null);
         $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
         return $rs;
+    }
+
+    public function postVerifDeco(Request $rq, Response $rs, array $args) {
+        //echo $_POST['bouton'];
+        switch ($_POST['bouton']){
+            case "Deconnexion":
+                $this->postDeconnexion($rq, $rs, $args);
+                break;
+            case "Reserver":
+                $this->postReserverItem($rq, $rs, $args);
+                break;
+            case "Visualiser":
+                $this->postAccederListe($rq, $rs, $args);
+                break;
+            case "Connexion":
+                $this->postConnexion($rq, $rs, $args);
+                break;
+        }
     }
 }
