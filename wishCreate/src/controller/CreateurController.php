@@ -275,13 +275,15 @@ class CreateurController
 
     public function postAjouterItem(Request $rq, Response $rs, array $args)
     {
+        $v = new CreateurVue(null);
+
         $data = $rq->getParsedBody();
         $nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
         $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
         $prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
         $url = filter_var($data['url'], FILTER_SANITIZE_URL);
         $imgInt = filter_var($data['img-int'], FILTER_SANITIZE_URL);
-        $imgExt = filter_var($_FILES['img-ext'], FILTER_SANITIZE_URL);
+
         $img = null;
 
         $htmlvars = [
@@ -313,13 +315,18 @@ class CreateurController
                         if(move_uploaded_file($file_tmp_name, $file_dest)){
                             $img=$file_name;
                         } else {
-                            echo 'Une erreur est survenue';
+                            $htmlvars['message'] = "Une erreur est survenue";
+                            $htmlvars['url']= $this->c->router->pathFor('detailListe', ['token_admin'=>$args['token_admin']]);;
+                            $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
+                            return $rs;
                         }
                     } else {
-                        echo 'Seuls les images sont acceptées';
+                        $htmlvars['message'] = "Seuls les images en PNG ou JPG sont acceptées";
+                        $htmlvars['url']= $this->c->router->pathFor('detailListe', ['token_admin'=>$args['token_admin']]);;
+                        $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
+                        return $rs;
                     }
-                    require __DIR__.'..\..\..\wishlist\web\img';
-                    copy($file_dest, substr($htmlvars['basepath'], 0, -11).'/wishlist/web/img/'.$file_name);
+                    copy($file_dest, "./../wishlist/web/img/{$file_name}");
                 }
                 break;
         }
@@ -341,8 +348,6 @@ class CreateurController
         $htmlvars['message'] = "Item ajouté avec succès !";
         $htmlvars['url']= $url;
 
-
-        $v = new CreateurVue(null);
         $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
         return $rs;
     }
