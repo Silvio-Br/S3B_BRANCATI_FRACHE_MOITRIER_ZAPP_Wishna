@@ -157,7 +157,7 @@ END;
             $html .= <<<END
                 
               </table>
-          </section>
+        </section>
 END;
 
         } else {
