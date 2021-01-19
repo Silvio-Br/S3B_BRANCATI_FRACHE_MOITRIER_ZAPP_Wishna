@@ -280,15 +280,48 @@ class CreateurController
         $description = filter_var($data['desc'], FILTER_SANITIZE_STRING);
         $prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
         $url = filter_var($data['url'], FILTER_SANITIZE_URL);
-        $img = filter_var($data['img'], FILTER_SANITIZE_URL);
+        $imgInt = filter_var($data['img-int'], FILTER_SANITIZE_URL);
+        $imgExt = filter_var($_FILES['img-ext'], FILTER_SANITIZE_URL);
+        $img = null;
 
-        $racineImg = substr($img, 0,8);
-        if ($racineImg == "web/img/") {
-            $img = substr($img, 8);
-        }
+        $htmlvars = [
+            'basepath'=> $rq->getUri()->getBasePath()
+        ];
 
-        if (strlen($img) == 0) {
-            $img = "noImage.png";
+        switch($_POST['choix']){
+            case "lien-interne":
+                $racineImg = substr($imgInt, 0,8);
+                if ($racineImg == "web/img/") {
+                    $img = substr($imgInt, 8);
+                }
+                if (strlen($img) == 0) {
+                    $img = "noImage.png";
+                }
+                break;
+            case "lien-externe":
+
+                if(!empty($_FILES)){
+                    $file_name = $_FILES['img-ext']['name'];
+                    $file_extension = strrchr($file_name,".");
+
+                    $file_tmp_name = $_FILES['img-ext']['tmp_name'];
+                    $file_dest = 'web/img/'.$file_name;
+
+                    $extension_autorise= array('.jpg', '.png', '.JPG', '.PNG');
+
+                    if(in_array($file_extension, $extension_autorise)){
+                        if(move_uploaded_file($file_tmp_name, $file_dest)){
+                            $img=$file_name;
+                        } else {
+                            echo 'Une erreur est survenue';
+                        }
+                    } else {
+                        echo 'Seuls les images sont acceptées';
+                    }
+                    require __DIR__.'..\..\..\wishlist\web\img';
+                    copy($file_dest, substr($htmlvars['basepath'], 0, -11).'/wishlist/web/img/'.$file_name);
+                }
+                break;
         }
 
         $tokenAdmin = $args['token_admin'];
@@ -305,11 +338,9 @@ class CreateurController
         $item->save();
 
         $url = $this->c->router->pathFor('detailListe', ['token_admin'=>$liste->tokenAdmin]);
-        $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath(),
-            'message' => "Item ajouté avec succès !",
-            'url' => $url
-        ];
+        $htmlvars['message'] = "Item ajouté avec succès !";
+        $htmlvars['url']= $url;
+
 
         $v = new CreateurVue(null);
         $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
