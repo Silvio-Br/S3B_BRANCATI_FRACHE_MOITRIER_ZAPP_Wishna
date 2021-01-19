@@ -118,6 +118,37 @@ class ParticipantController
         return $rs;
     }
 
+    public function postInscription(Request $rq, Response $rs, array $args): Response
+    {
+        $data = $rq->getParsedBody();
+        $userName = filter_var($data['user_name'], FILTER_SANITIZE_STRING);
+        $mdp = filter_var($data['pass_word'], FILTER_SANITIZE_STRING);
+
+        $result = Compte::signUp($userName, $mdp);
+
+        $v = new ParticipantVue(null);
+
+        if ($result == "ok"){
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'message' => "Compte crée avec succès",
+                'url' => $this->c->router->pathFor('home')
+            ];
+            Compte::login($userName, $mdp);
+            $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
+            return $rs;
+        } else {
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'message' => "Username existe deja",
+                'url' => $this->c->router->pathFor('inscription')
+            ];
+            $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
+            return $rs;
+        }
+        return $rs;
+    }
+
     /**
      * suite à la validation du formulaire de la page home on redirige vers la page de la liste si existe
      * @param Request $rq
@@ -286,6 +317,10 @@ class ParticipantController
             case "Connexion":
                 $this->postConnexion($rq, $rs, $args);
                 break;
+            case "S'inscrire":
+                $this->postInscription($rq, $rs, $args);
+                break;
+                default;
         }
     }
 }

@@ -29,4 +29,16 @@ class Compte extends Model
         }
     }
 
+    public static function signUp($user, $mdp) {
+        $existeDeja = Compte::where([['userName', '=', $user]])->get();
+        if ($existeDeja->first() != null){
+            return "Username existe dejà";
+        } else {
+            $tmp = new Compte();
+            $tmp->userName = $user;
+            $tmp->password = $mdp;
+            $tmp->save();
+            return "ok";
+        }
+    }
 }

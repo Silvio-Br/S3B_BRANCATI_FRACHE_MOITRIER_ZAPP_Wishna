@@ -35,6 +35,11 @@ $app->get('/inscription', function(Request $rq, Response $rs, array $args): Resp
     return $c->displayInscription($rq,$rs,$args);
 })->setName('inscription');
 
+$app->post('/inscription', function (Request $rq, Response $rs, array $args) {
+    $c = new ParticipantController($this);
+    $c->postVerifDeco($rq, $rs, $args);
+});
+
 $app->get('/monespace', function(Request $rq, Response $rs, array $args): Response {
     $c = new ParticipantController($this);
     return $c->displayConnexion($rq,$rs,$args);
