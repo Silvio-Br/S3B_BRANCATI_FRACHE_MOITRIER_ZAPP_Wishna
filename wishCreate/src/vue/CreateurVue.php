@@ -236,12 +236,17 @@ END;
     private function unFormulaireAjouterItem(): string
     {
         $html = <<<END
-<form method="post">
+        <form method="post">
             <p>Nom<span class="required">*</span> : <input type="text" name="nom" required/></p>
             <p>Description<span class="required">*</span> : <input type="text" name="desc" required/></p>
             <p>Prix<span class="required">*</span> : <input type="number" min="0" name="prix" required/></p>
             <p>Url : <input type="url" name="url"/></p>
-            <p>Image : <input name="img" value="web/img/"/><input type="file" name="fichier"/> </p>
+            <p>Image : 
+            <FORM>
+                <INPUT type= "radio" name="img" value="lien_interne" checked> <input name="lien-int" value="web/img/"/>
+                <INPUT type= "radio" name="img" value="lien_externe"> <input type="file" name="lien-ext"/>
+            </FORM>
+            </p>
             <p><input type="submit" value="OK"></p>
         </form>
 END;
