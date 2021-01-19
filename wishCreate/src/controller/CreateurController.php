@@ -58,47 +58,39 @@ class CreateurController
                 'share' => $this->c->router->pathFor('partagerListe', ['token_admin'=>$liste->tokenAdmin])
             ];
 
-            $tabItems = array();
-            foreach ($items as $item) {
-                if ($item->reservation == 0) {
-                    $urlModifierListe = $this->c->router->pathFor('modifierItem', ['id_item'=>$item->id,'token_admin'=>$args['token_admin']]);
-                    array_push($tabItems, [$item, $urlModifierListe]);
-                } else {
-                    array_push($tabItems, [$item, null]);
-                }
-
-            }
-            $htmlvars['objets']=$tabItems;
-
-            $htmlModifier = null;
-
             $expiration = $liste->expiration;
             $origin = new \DateTime('now');
             $target = new \DateTime("{$expiration}");
             $interval = $origin->diff($target);
 
             if (!(intval($interval->format('%R%a')) < 0)) {
-                $urlModifierListe = $this->c->router->pathFor('modifierListe', ['token_admin'=>$liste->tokenAdmin]);
+                $tabItems = array();
+                foreach ($items as $item) {
+                    if ($item->reservation == 0) {
+                        $urlModifierItem = $this->c->router->pathFor('modifierItem', ['id_item'=>$item->id,'token_admin'=>$args['token_admin']]);
+                        array_push($tabItems, [$item, $urlModifierItem]);
+                    } else {
+                        array_push($tabItems, [$item, null]);
+                    }
+
+                }
+                $htmlvars['objets']=$tabItems;
+
+                $urlModifierItem = $this->c->router->pathFor('modifierListe', ['token_admin'=>$liste->tokenAdmin]);
                 $urlAjouterItem = $this->c->router->pathFor('ajouterItem', ['token_admin'=>$liste->tokenAdmin]);
-                $htmlModifier = <<<END
-<button onclick="location.href='$urlModifierListe'">Modifier</button>
-END;
-                $htmlAjouter = <<<END
-<button onclick="location.href='$urlAjouterItem'">Ajouter un item</button>
-END;
-                $htmlvars['modifier']=$htmlModifier;
-                $htmlvars['ajouter']=$htmlAjouter;
-                $rs->getBody()->write($v->render($htmlvars, CreateurVue::LISTE_AVEC_ITEMS));
+                $htmlvars['modifier']=$urlModifierItem;
+                $htmlvars['ajouter']=$urlAjouterItem;
+                $rs->getBody()->write($v->render($htmlvars, CreateurVue::LISTE_NON_EXPIREE));
             } else {
-                $htmlModifier = <<<END
-<p>Vous ne pouvez plus modifier cette liste</p>
-END;
-                $htmlAjouter = <<<END
-<p>Vous ne pouvez plus ajouter d'items à cette liste</p>
-END;
-                $htmlvars['modifier']=$htmlModifier;
-                $htmlvars['ajouter']=$htmlAjouter;
-                $rs->getBody()->write($v->render($htmlvars, CreateurVue::LIST_EXPIREE));
+                $tabItems = array();
+                foreach ($items as $item) {
+                    if ($item->reservation == 1) {
+                        array_push($tabItems, $item);
+                    }
+                }
+                $htmlvars['objets']=$tabItems;
+
+                $rs->getBody()->write($v->render($htmlvars, CreateurVue::LISTE_EXPIREE));
             }
 
 
@@ -321,7 +313,7 @@ END;
         ];
 
         $v = new CreateurVue(null);
-        $rs->getBody()->write($v->render($htmlvars, CreateurVue::FORM));
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::CREATE));
         return $rs;
     }
 
@@ -333,12 +325,12 @@ END;
 
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
-            'share' => "{$liste->token}",
+            'message' => "Voici le token de votre liste à partager : {$liste->token}",
             'url' => $urlDetailListe
         ];
 
         $v = new CreateurVue(null);
-        $rs->getBody()->write($v->render($htmlvars, CreateurVue::PARTAGER));
+        $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
         return $rs;
     }
 

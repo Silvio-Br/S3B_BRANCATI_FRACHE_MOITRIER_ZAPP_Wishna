@@ -9,15 +9,45 @@ class CreateurVue
 
     private $data;
 
+    /**
+     * constante correspondante à l'affichage de la page home
+     */
     const HOME = 1;
-    const LISTE_AVEC_ITEMS = 2;
+
+    /**
+     * constante correspondante à l'affichage d'une liste non expirée
+     */
+    const LISTE_NON_EXPIREE = 2;
+
+    /**
+     * constante correspondante à la modification d'un item
+     */
     const MODIFIER_ITEM = 3;
+
+    /**
+     * constante correspondante à la modification d'une liste
+     */
     const MODIFIER_LISTE = 4;
-    const FORM = 5;
+
+    /**
+     * constante correspondante à la création d'une liste
+     */
+    const CREATE = 5;
+
+    /**
+     * constante correspondante à l'affichage d'un message avec un lien de retour
+     */
     const MESSAGE = 6;
+
+    /**
+     * constante correspondante à l'ajout d'un item dans une liste
+     */
     const AJOUTER_ITEM = 7;
-    const PARTAGER = 8;
-    const LIST_EXPIREE = 9;
+
+    /**
+     * constante correspondante à l'affichage d'une liste expirée
+     */
+    const LISTE_EXPIREE = 8;
 
 
     /**
@@ -52,7 +82,7 @@ END;
             <p class="date">{$liste->expiration}</p>
         </section>
         <section class="modifier">
-            {$vars['modifier']}
+            <button onclick="location.href='{$vars['modifier']}'">Modifier</button>
         </section>
 END;
         if (sizeOf($vars['objets'])>0) {
@@ -81,7 +111,7 @@ END;
         $html .= <<<END
 
          <section class='ajouter'>
-            {$vars['ajouter']}
+            <button onclick="location.href='{$vars['ajouter']}'">Ajouter un item</button>
          </section>
          <section class='partager'>
             <button onclick="window.location.href='{$vars['share']}'">Partager ma liste</button>
@@ -98,7 +128,7 @@ END;
             <p class="date">{$liste->expiration}</p>
         </section>
         <section class="modifier">
-            {$vars['modifier']}
+            <p>Vous ne pouvez plus modifier cette liste</p>
         </section>
 END;
         if (sizeOf($vars['objets'])>0) {
@@ -114,7 +144,7 @@ END;
                 </tr>
 END;
             for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
-                $html .= $this->unItemExpire($vars['objets'][$i][0], $vars['basepath']);
+                $html .= $this->unItemExpire($vars['objets'][$i], $vars['basepath']);
             }
             $html .= <<<END
                 
@@ -122,13 +152,13 @@ END;
           </section>
 END;
         } else {
-            $html .= "<p>Aucuns items dans votre liste</p>";
+            $html .= "<p>Aucuns items réservés dans votre liste</p>";
         }
 
         $html .= <<<END
 
          <section class='ajouter'>
-            {$vars['ajouter']}
+            <p>Vous ne pouvez plus ajouter d'items dans cette liste</p>
          </section>
 END;
         return $html;
@@ -218,7 +248,7 @@ END;
         return $html;
     }
 
-    private function unFormulaireHtml(): string {
+    private function unFormulaireCreerListe(): string {
         $date = new \DateTime("tomorrow");
         $date = $date->format("Y-m-d");
         $html = <<<END
@@ -258,22 +288,12 @@ END;
 
     }
 
-    public function partagerListe($vars): string
-    {
-        $html = <<<END
-<p class="message">Voici le token de votre liste à partager: {$vars['share']}</p>
-<button onclick="window.location.href='{$vars['url']}'">Ok</button>
-END;
-        return $html;
-
-    }
-
     public function render(array $vars, int $typeAffichage): string {
         switch ($typeAffichage) {
             case CreateurVue::HOME:
                 $content = $this->pageHome();
                 break;
-            case CreateurVue::LISTE_AVEC_ITEMS:
+            case CreateurVue::LISTE_NON_EXPIREE:
                 $content = $this->uneListeHtml($this->data[0], $vars);
                 break;
             case CreateurVue::MODIFIER_ITEM:
@@ -282,8 +302,8 @@ END;
             case CreateurVue::MODIFIER_LISTE:
                 $content = $this->unFormulaireModifierListe($this->data[0]);
                 break;
-            case CreateurVue::FORM:
-                $content = $this->unFormulaireHtml();
+            case CreateurVue::CREATE:
+                $content = $this->unFormulaireCreerListe();
                 break;
             case CreateurVue::MESSAGE:
                 $content = $this->unMessage($vars);
@@ -291,10 +311,7 @@ END;
             case CreateurVue::AJOUTER_ITEM:
                 $content = $this->unFormulaireAjouterItem();
                 break;
-            case CreateurVue::PARTAGER:
-                $content = $this->partagerListe($vars);
-                break;
-            case CreateurVue::LIST_EXPIREE:
+            case CreateurVue::LISTE_EXPIREE:
                 $content = $this->uneListeExpireeHtml($this->data[0], $vars);
                 break;
         }
