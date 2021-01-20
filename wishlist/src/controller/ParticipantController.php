@@ -33,13 +33,11 @@ class ParticipantController
     public function displayHome(Request $rq, Response $rs, array $args): Response
     {
         $htmlvars = [
-            'basepath' => $rq->getUri()->getBasePath()
+            'basepath' => $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
-
-        if (!$_SESSION['isConnect']) {
-            $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
-            $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
-        }
 
         $listes = null;
 
@@ -66,13 +64,11 @@ class ParticipantController
         $v = new ParticipantVue(null);
 
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
-
-        if (!$_SESSION['isConnect']) {
-            $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
-            $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
-        }
 
         $rs->getBody()->write($v->render($htmlvars, ParticipantVue::CONNECT));
         return $rs;
@@ -89,7 +85,10 @@ class ParticipantController
         $v = new ParticipantVue(null);
 
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         if ($_SESSION['isConnect']){
@@ -103,12 +102,14 @@ class ParticipantController
 
     public function postDeconnexion(Request $rq, Response $rs, array $args)
     {
+        $data = $rq->getParsedBody();
         $v = new ParticipantVue(null);
 
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
             'message' => "Vous êtes bien déconnecté",
             'url' => $this->c->router->pathFor('home'),
+            'accueil' => $this->c->router->pathFor('home'),
             'connect' => $this->c->router->pathFor('connect', []),
             'inscription' => $this->c->router->pathFor('inscription', [])
         ];
@@ -125,13 +126,11 @@ class ParticipantController
         $v = new ParticipantVue(null);
 
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
-
-        if (!$_SESSION['isConnect']) {
-            $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
-            $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
-        }
 
         $rs->getBody()->write($v->render($htmlvars, ParticipantVue::INSCRIPTION));
         return $rs;
@@ -151,7 +150,10 @@ class ParticipantController
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'message' => "Compte crée avec succès",
-                'url' => $this->c->router->pathFor('home')
+                'url' => $this->c->router->pathFor('home'),
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
             Compte::login($userName, $mdp);
             $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
@@ -160,7 +162,10 @@ class ParticipantController
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'message' => "Username existe deja",
-                'url' => $this->c->router->pathFor('inscription')
+                'url' => $this->c->router->pathFor('inscription'),
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
             $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
             return $rs;
@@ -173,7 +178,10 @@ class ParticipantController
         $v = new ParticipantVue(null);
 
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $rs->getBody()->write($v->render($htmlvars, ParticipantVue::INSCRIPTION));
@@ -216,13 +224,11 @@ class ParticipantController
 
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
-                'etreCreateur' => false
+                'etreCreateur' => false,
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
-
-            if (!$_SESSION['isConnect']) {
-                $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
-                $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
-            }
 
             $liste = Liste::liste($args['token_liste'])->firstOrFail();
             $items = $liste->items()->get();
@@ -260,6 +266,9 @@ class ParticipantController
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'url' => $this->c->router->pathFor('home'),
                 'message' => "Liste inexistante, retournez à l'accueil pour réessayer",
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
             $v = new ParticipantVue(null);
             $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
@@ -299,13 +308,11 @@ class ParticipantController
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'etreCreateur' => $etreCreateur,
-                'expire' => intval($interval->format('%R%a')) < 0
+                'expire' => intval($interval->format('%R%a')) < 0,
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
-
-            if (!$_SESSION['isConnect']) {
-                $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
-                $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
-            }
 
             $v = new ParticipantVue([$item]);
 
@@ -315,13 +322,11 @@ class ParticipantController
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'url' => $this->c->router->pathFor('detailListe', ['token_liste'=>$args['token_liste']]),
-                'message' => "Cet item n'est pas présent dans cette liste"
+                'message' => "Cet item n'est pas présent dans cette liste",
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
-
-            if (!$_SESSION['isConnect']) {
-                $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
-                $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
-            }
 
             $v = new ParticipantVue(null);
             $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
@@ -350,7 +355,10 @@ class ParticipantController
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
             'message' => "Votre réservation a été enregistrée avec succès !",
-            'url' => $url
+            'url' => $url,
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $v = new ParticipantVue(null);

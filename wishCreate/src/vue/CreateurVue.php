@@ -321,6 +321,10 @@ END;
                 $content = $this->uneListeExpireeHtml($this->data[0], $vars);
                 break;
         }
+        $htmlAddOn = <<<END
+<div class="statut">
+<button onclick="window.location.href='{$vars['accueil']}'">Accueil</button>
+END;
         $html = <<<END
 <!DOCTYPE html>
 <html>
@@ -330,6 +334,7 @@ END;
     </head>
     <body>
         $content
+        $htmlAddOn
     </body>
 </html>
 END;
