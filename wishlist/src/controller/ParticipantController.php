@@ -206,8 +206,30 @@ class ParticipantController
         $data = $rq->getParsedBody();
         $mdp = filter_var($data['pass_word'], FILTER_SANITIZE_STRING);
         if ($mdp != null){
-            
+            $tmp = Compte::changeMdp($_SESSION['userName'], $mdp);
+            if ($tmp == "ok"){
+                $htmlvars = [
+                    'basepath'=> $rq->getUri()->getBasePath(),
+                    'url' => $this->c->router->pathFor('home'),
+                    'message' => "Mot de passe modifié !",
+                ];
+            } else {
+                $htmlvars = [
+                    'basepath'=> $rq->getUri()->getBasePath(),
+                    'url' => $this->c->router->pathFor('home'),
+                    'message' => "Erreur lors de la modification...",
+                ];
+            }
+        } else {
+            $htmlvars = [
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'url' => $this->c->router->pathFor('home'),
+                'message' => "Nouveau mot de passe vide...",
+            ];
         }
+        $v = new ParticipantVue(null);
+        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
+        return $rs;
     }
 
     /**
@@ -401,6 +423,10 @@ class ParticipantController
             case "S'inscrire":
                 $this->postInscription($rq, $rs, $args);
                 break;
+            case "Modifier":
+                $this->postEspace($rq, $rs, $args);
+                break;
+
                 default;
         }
     }

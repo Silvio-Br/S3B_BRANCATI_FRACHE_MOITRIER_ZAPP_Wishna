@@ -41,4 +41,13 @@ class Compte extends Model
             return "ok";
         }
     }
+
+    public static function changeMdp($user, $newMdp) {
+        try{
+            Compte::userName($user)->update(array('password'=>$newMdp));
+            return "ok";
+        } catch(\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }
