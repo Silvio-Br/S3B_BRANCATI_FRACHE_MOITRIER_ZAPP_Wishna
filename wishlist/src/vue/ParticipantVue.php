@@ -409,6 +409,9 @@ END;
         if ($_SESSION['isConnect']) $htmlAddOn = <<<END
 <div class="statut">
     <p>Connecté en tant que : {$_SESSION['userName']}</p>
+    <p><button onclick="window.location.href='{$vars['espace']}'">Mon espace</button>
+    <button onclick="window.location.href='{$vars['accueil']}'">Accueil</button>
+    </p>
     <form method="post">
         <input class="bouton" type="submit" value="Deconnexion" name="bouton">
     </form>
