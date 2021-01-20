@@ -139,7 +139,7 @@ END;
             <br>
             <h5>  Changer de mot de passe ?</h5>
             <label for="Password">Votre nouveau mot de passe :<span class="required">*</span></label>
-            <p><input class="bouton" type="submit" value="v" name="bouton"></p>
+            <p><input class="bouton" type="submit" value="Modifier" name="bouton"></p>
         </form>
 END;
         return $html;
