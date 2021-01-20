@@ -12,8 +12,14 @@ body {
 .desc {
     color : #333333;
     margin-left: 10%;
-    margin-bottom: 30px;
     font-size: 120%;
+}
+
+h1{
+    color : #333333;
+    margin-left: 12%;
+    margin-bottom: 2px;
+    font-size: 150%;
 }
 
 .tableau {
@@ -50,11 +56,6 @@ a{
     font-weight: bold;
 }
 
-form{
-    font-size: 110%;
-    margin-left: 2%;
-}
-
 .prix, .reservation{
     font-size: 115%;
     margin-left: 3%;
@@ -70,21 +71,18 @@ form{
     right: 1%;
 }
 
-/**
-*test
- *
-.bouton p {
-    display:block;
-    width:150px;
-    line-height:50px;
-    text-align:center;
-    vertical-align:middle;
-    background:white no-repeat;
-    color:white;
-    text-decoration:none;
+p{
+    color : #333333;
+    margin-left: 8%;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    font-size: 120%;
 }
-.bouton p:hover {
-    background: #333333;
-    color: white;
+
+button{
+    color : #333333;
+    margin-left: 8%;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    font-size: 120%;
 }
-*/

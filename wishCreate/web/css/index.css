@@ -2,21 +2,23 @@ body {
     font-family: "Arial"
 }
 
-img {
-    float: right;
-    margin: 6px;
-}
-
 .imageItem{
     width: 100px;
     height: auto;
+    text-align: center;
+    margin : 6px;
+}
+
+img {
+    margin: 6px;
 }
 
 table
 {
     border-collapse: collapse;
 }
-td, th /* Mettre une bordure sur les td ET les th */
+
+td, th
 {
     border: 1px solid black;
     text-align: center;
@@ -24,4 +26,77 @@ td, th /* Mettre une bordure sur les td ET les th */
 
 .required {
     color: red;
+}
+
+.nom {
+    color: #222222;
+    font-size: 250%;
+    text-align: center;
+}
+
+.desc {
+    color : #333333;
+    margin-left: 8%;
+    margin-bottom: 30px;
+    font-size: 120%;
+}
+
+.tableau {
+    margin-top: 50px;
+    margin-left: 15%;
+    padding-bottom: 20px;
+}
+
+.date{
+    color : #333333;
+    margin-left: 6%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 120%;
+}
+
+button{
+    color : #333333;
+    margin-left: 10%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 110%;
+}
+
+th{
+    font-size: 110%;
+    width: 200px;
+}
+
+a{
+    color : #222222;
+    font-weight: bold;
+}
+
+form{
+    font-size: 110%;
+    margin-left: 2%;
+}
+
+.prix, .reservation{
+    font-size: 115%;
+    margin-left: 3%;
+}
+
+.required {
+    color: red;
+}
+
+.statut{
+    position: fixed;
+    bottom: 5%;
+    right: 1%;
+}
+
+.message{
+    color : #333333;
+    margin-left: 6%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 110%;
 }
