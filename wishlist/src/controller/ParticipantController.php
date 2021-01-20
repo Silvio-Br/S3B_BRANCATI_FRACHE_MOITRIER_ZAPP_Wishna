@@ -37,8 +37,13 @@ class ParticipantController
             'basepath' => $rq->getUri()->getBasePath()
         ];
 
-        $listes = Liste::listePublique()->orderBy('expiration')->get();
+        $listes = null;
 
+        if (isset($_GET['date'])) {
+            $listes = Liste::listePubliqueDepuisDate($_GET['date'])->orderBy('expiration')->get();
+        } else {
+            $listes = Liste::listePublique()->orderBy('expiration')->get();
+        }
         $tabListes = array();
         foreach ($listes as $liste) {
             $url = $this->c->router->pathFor('detailListe', ['token_liste'=>$liste->token]);

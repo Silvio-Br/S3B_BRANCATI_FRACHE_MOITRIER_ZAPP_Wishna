@@ -33,6 +33,15 @@ class Liste extends Model
     }
 
     /**
+     * methode retournant les listes étant publiques depuis la date donnée
+     * @return mixed
+     */
+    public static function listePubliqueDepuisDate(String $date)
+    {
+        return Liste::where([['etrePublique', '=', '1'], ['expiration', '>=', new \DateTime($date)]]);
+    }
+
+    /**
      * methode retournant les items appartenant à cette liste
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

@@ -73,6 +73,10 @@ class ParticipantVue
                  <p><input class="bouton" type="submit" value="Visualiser" name="bouton"></p>
             </form>
 <h1>Les listes publiques du moment</h1>
+        <form method="get">
+            <p>Rechercher liste(s) publique(s) à partir de la date : <input type="date" name="date" required/> <input type="submit" value="Rechercher"></p>
+            
+</form>
 END;
         if (sizeof($vars['objets']) > 0) {
             $html .= <<<END
