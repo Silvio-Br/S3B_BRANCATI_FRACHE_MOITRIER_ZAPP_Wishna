@@ -416,7 +416,11 @@ END;
 </div>
 END;
         else $htmlAddOn = <<<END
-<div class="statut">Non connecté</div>
+<div class="statut">
+<p>Non connecté</p>
+<button onclick="window.location.href='{$vars['connect']}'">Connexion</button>
+<button onclick="window.location.href='{$vars['inscription']}'">Inscription</button>
+</div>
 END;
         switch ($typeAffichage) {
             case ParticipantVue::HOME:

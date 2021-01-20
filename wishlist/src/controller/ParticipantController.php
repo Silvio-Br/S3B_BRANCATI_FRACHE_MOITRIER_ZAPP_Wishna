@@ -2,7 +2,6 @@
 
 namespace wishlist\controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Date;
 use Slim\Container;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -37,6 +36,11 @@ class ParticipantController
             'basepath' => $rq->getUri()->getBasePath()
         ];
 
+        if (!$_SESSION['isConnect']) {
+            $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
+            $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
+        }
+
         $listes = null;
 
         if (isset($_GET['date'])) {
@@ -64,6 +68,11 @@ class ParticipantController
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath()
         ];
+
+        if (!$_SESSION['isConnect']) {
+            $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
+            $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
+        }
 
         $rs->getBody()->write($v->render($htmlvars, ParticipantVue::CONNECT));
         return $rs;
@@ -94,14 +103,14 @@ class ParticipantController
 
     public function postDeconnexion(Request $rq, Response $rs, array $args)
     {
-        $data = $rq->getParsedBody();
-
         $v = new ParticipantVue(null);
 
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
             'message' => "Vous êtes bien déconnecté",
-            'url' => $this->c->router->pathFor('home')
+            'url' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         Compte::logout();
@@ -118,6 +127,11 @@ class ParticipantController
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath()
         ];
+
+        if (!$_SESSION['isConnect']) {
+            $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
+            $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
+        }
 
         $rs->getBody()->write($v->render($htmlvars, ParticipantVue::INSCRIPTION));
         return $rs;
@@ -205,6 +219,11 @@ class ParticipantController
                 'etreCreateur' => false
             ];
 
+            if (!$_SESSION['isConnect']) {
+                $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
+                $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
+            }
+
             $liste = Liste::liste($args['token_liste'])->firstOrFail();
             $items = $liste->items()->get();
 
@@ -283,6 +302,11 @@ class ParticipantController
                 'expire' => intval($interval->format('%R%a')) < 0
             ];
 
+            if (!$_SESSION['isConnect']) {
+                $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
+                $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
+            }
+
             $v = new ParticipantVue([$item]);
 
             $rs->getBody()->write($v->render($htmlvars, ParticipantVue::ITEM_SEUL));
@@ -293,6 +317,12 @@ class ParticipantController
                 'url' => $this->c->router->pathFor('detailListe', ['token_liste'=>$args['token_liste']]),
                 'message' => "Cet item n'est pas présent dans cette liste"
             ];
+
+            if (!$_SESSION['isConnect']) {
+                $htmlvars['connect'] = $this->c->router->pathFor('connect', []);
+                $htmlvars['inscription'] = $this->c->router->pathFor('inscription', []);
+            }
+
             $v = new ParticipantVue(null);
             $rs->getBody()->write($v->render($htmlvars, ParticipantVue::MESSAGE));
             return $rs;
@@ -329,7 +359,6 @@ class ParticipantController
     }
 
     public function postVerifDeco(Request $rq, Response $rs, array $args) {
-        //echo $_POST['bouton'];
         switch ($_POST['bouton']){
             case "Deconnexion":
                 $this->postDeconnexion($rq, $rs, $args);
