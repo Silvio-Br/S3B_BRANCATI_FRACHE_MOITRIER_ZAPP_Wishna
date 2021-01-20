@@ -33,12 +33,23 @@ class ParticipantVue
     const ITEM_SEUL = 4;
 
     /**
-     * constante correspondante à o'affichage d'un message et d'un bouton de redirection
+     * constante correspondante à l'affichage d'un message et d'un bouton de redirection
      */
     const MESSAGE = 5;
 
+    /**
+     * constante correspondante à l'affichage de la page de connexion
+     */
     const CONNECT = 6;
+
+    /**
+     * constante correspondante à l'affichage de la page d'inscription
+     */
     const INSCRIPTION = 7;
+
+    /**
+     * constante correspondante à l'espace membre connecté
+     */
     const ESPACE = 8;
 
     /**
@@ -62,6 +73,9 @@ class ParticipantVue
                  <p><input class="bouton" type="submit" value="Visualiser" name="bouton"></p>
             </form>
 <h1>Les listes publiques du moment</h1>
+END;
+        if (sizeof($vars['objets']) > 0) {
+            $html .= <<<END
 <table>
     <tr>
         <th>Nom</th>
@@ -69,14 +83,17 @@ class ParticipantVue
     </tr>
 
 END;
-        for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
-            $html .= $this->uneListe($vars['objets'][$i][0], $vars['objets'][$i][1]);
-        }
-        $html .= <<<END
+            for ($i = 0; $i < sizeOf($vars['objets']); $i++) {
+                $html .= $this->uneListe($vars['objets'][$i][0], $vars['objets'][$i][1]);
+            }
+            $html .= <<<END
                 
               </table>
           </section>
 END;
+        } else {
+            $html .= "<p>Aucunes listes publiques disponibles</p>";
+        }
         return $html;
     }
 
@@ -123,9 +140,9 @@ END;
         return $html;
     }
     /**
- * Affiche la page de d'inscription pour l'utilisateur
- * @return string
- */
+    * Affiche la page de d'inscription pour l'utilisateur
+    * @return string
+    */
     private function pageInscription(): string
     {
         $html = <<<END
@@ -185,6 +202,12 @@ END;
         return $html;
     }
 
+    /**
+     * methode affichant le contenu d'une liste qui est expirée
+     * @param Liste $liste
+     * @param $vars
+     * @return string
+     */
     private function uneListeHtmlExpiree(Liste $liste, $vars): string {
         $html = <<<END
 <section class="titreListe">
@@ -289,6 +312,12 @@ END;
         return $html;
     }
 
+    /**
+     * methode affichant le titre et la date d'expiration d'une liste dans un tableau
+     * @param Liste $liste
+     * @param $url
+     * @return string
+     */
     private function uneListe(Liste $liste, $url): string {
         $html = <<<END
             
@@ -300,6 +329,13 @@ END;
         return $html;
     }
 
+    /**
+     * methode affichant la page d'un item expiré dans un tableau
+     * @param Item $item
+     * @param $basepath
+     * @param $url
+     * @return string
+     */
     private function unItemExpire(Item $item, $basepath, $url): string {
         $html = "";
         if ($item->reservation) {
