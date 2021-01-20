@@ -267,24 +267,30 @@ class ParticipantController
             ];
 
             $liste = Liste::liste($args['token_liste'])->firstOrFail();
-            $items = $liste->items()->get();
-
-            $tabItems = array();
-            foreach ($items as $item) {
-                $url = $this->c->router->pathFor('detailItem', ['id_item'=>$item->id,'token_liste'=>$args['token_liste']]);
-                array_push($tabItems, [$item, $url]);
-            }
-            $htmlvars['objets'] = $tabItems;
 
             $expiration = $liste->expiration;
             $origin = new \DateTime('now');
             $target = new \DateTime("{$expiration}");
             $interval = $origin->diff($target);
 
+            $tabItems = array();
+
             if (intval($interval->format('%R%a')) < 0) {
+                $items = $liste->items()->where('reservation','=','1')->get();
+                foreach ($items as $item) {
+                    $url = $this->c->router->pathFor('detailItem', ['id_item'=>$item->id,'token_liste'=>$args['token_liste']]);
+                    array_push($tabItems, [$item, $url]);
+                }
+                $htmlvars['objets'] = $tabItems;
                 $v = new ParticipantVue([$liste]);
                 $rs->getBody()->write($v->render($htmlvars, ParticipantVue::LISTE_CONTENT_EXPIRE));
             } else {
+                $items = $liste->items()->get();
+                foreach ($items as $item) {
+                    $url = $this->c->router->pathFor('detailItem', ['id_item'=>$item->id,'token_liste'=>$args['token_liste']]);
+                    array_push($tabItems, [$item, $url]);
+                }
+                $htmlvars['objets'] = $tabItems;
                 if (isset($_COOKIE['createur'])) {
                     $arrayTokenCreateur = explode("-", $_COOKIE['createur']);
                     if (in_array($args['token_liste'], $arrayTokenCreateur)) {

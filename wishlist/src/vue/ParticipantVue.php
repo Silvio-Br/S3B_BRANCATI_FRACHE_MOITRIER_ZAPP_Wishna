@@ -220,6 +220,7 @@ END;
             <p class="desc">{$liste->description}</p>
         </section>
 END;
+
         if (sizeOf($vars['objets'])>0) {
             $html .= <<<END
                 
@@ -242,7 +243,7 @@ END;
 END;
 
         } else {
-            $html .= "<p>Aucuns items dans cette liste</p>";
+            $html .= "<p>Aucuns items dans cette liste réservés</p>";
         }
         return $html;
     }
