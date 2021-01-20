@@ -117,7 +117,7 @@ END;
             </div>
             <div>
                 <label for="Password">Votre mot de passe :<span class="required">*</span></label>
-                <input type="text" id="Password" name="pass_word" required>
+                <input type="password" id="Password" name="pass_word" required>
             </div>
           
             <p><input class="bouton" type="submit" value="Connexion" name="bouton"></p>
@@ -135,7 +135,7 @@ END;
         $html = <<<END
         <form method="post">
             <h2>   <U>Votre espace personnel</U></h2>
-            <p>Vous êtes {$_SESSION['username']}</p>
+            <p>Vous êtes {$_SESSION['nom']}</p>
             <br>
             <h5>  Changer de mot de passe ?</h5>
             <label for="Password">Votre nouveau mot de passe :<span class="required">*</span></label>

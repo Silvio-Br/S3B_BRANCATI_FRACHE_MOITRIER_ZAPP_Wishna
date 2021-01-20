@@ -69,4 +69,9 @@ $app->post("/liste/{token_liste}/item/{id_item}[/]", function (Request $rq, Resp
     $c->postVerifDeco($rq, $rs, $args);
 });
 
+$app->post("/monespace[/]", function (Request $rq, Response $rs, array $args) {
+    $c = new ParticipantController($this);
+    $c->postVerifDeco($rq, $rs, $args);
+});
+
 $app->run();

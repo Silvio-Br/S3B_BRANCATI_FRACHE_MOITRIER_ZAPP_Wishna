@@ -184,7 +184,12 @@ class ParticipantController
             'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
-        $rs->getBody()->write($v->render($htmlvars, ParticipantVue::INSCRIPTION));
+        if ($_SESSION['isConnect']) {
+            $rs->getBody()->write($v->render($htmlvars, ParticipantVue::ESPACE));
+        } else {
+            $rs->getBody()->write($v->render($htmlvars, ParticipantVue::CONNECT));
+        }
+
         return $rs;
     }
 
