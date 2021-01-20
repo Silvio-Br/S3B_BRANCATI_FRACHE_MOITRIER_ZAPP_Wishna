@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Compte extends Model
 {
     protected $table = 'compte';
-    protected $primaryKey = 'iduser';
+    protected $primaryKey = 'idCompte';
 
     public function usesTimestamps() : bool
     {
@@ -44,9 +44,12 @@ class Compte extends Model
 
     public static function changeMdp($user, $newMdp) {
         try{
-            Compte::userName($user)->update(array('password'=>$newMdp));
+            $compte = Compte::query()->where('userName', '=', $user)->firstOrFail();
+            $compte->password = $newMdp;
+            $compte->save();
             return "ok";
         } catch(\Exception $e) {
+            echo $e->getMessage();
             return $e->getMessage();
         }
     }

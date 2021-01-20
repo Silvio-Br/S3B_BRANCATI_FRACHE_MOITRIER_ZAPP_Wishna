@@ -212,12 +212,20 @@ class ParticipantController
                     'basepath'=> $rq->getUri()->getBasePath(),
                     'url' => $this->c->router->pathFor('home'),
                     'message' => "Mot de passe modifié !",
+                    'accueil' => $this->c->router->pathFor('home'),
+                    'connect' => $this->c->router->pathFor('connect', []),
+                    'inscription' => $this->c->router->pathFor('inscription', []),
+                    'espace' => $this->c->router->pathFor('espace')
                 ];
             } else {
                 $htmlvars = [
                     'basepath'=> $rq->getUri()->getBasePath(),
                     'url' => $this->c->router->pathFor('home'),
                     'message' => "Erreur lors de la modification...",
+                    'accueil' => $this->c->router->pathFor('home'),
+                    'connect' => $this->c->router->pathFor('connect', []),
+                    'inscription' => $this->c->router->pathFor('inscription', []),
+                    'espace' => $this->c->router->pathFor('espace')
                 ];
             }
         } else {
@@ -225,6 +233,10 @@ class ParticipantController
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'url' => $this->c->router->pathFor('home'),
                 'message' => "Nouveau mot de passe vide...",
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', []),
+                'espace' => $this->c->router->pathFor('espace')
             ];
         }
         $v = new ParticipantVue(null);

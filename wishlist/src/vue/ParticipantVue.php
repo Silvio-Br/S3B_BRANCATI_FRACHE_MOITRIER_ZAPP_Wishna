@@ -135,10 +135,11 @@ END;
         $html = <<<END
         <form method="post">
             <h2>   <U>Votre espace personnel</U></h2>
-            <p>Vous êtes {$_SESSION['nom']}</p>
+            <p>Vous êtes <I><B>{$_SESSION['userName']}</B></I></p>
             <br>
             <h5>  Changer de mot de passe ?</h5>
-            <label for="Password">Votre nouveau mot de passe :<span class="required">*</span></label>
+            <label for="Password">Votre nouveau mot de passe :<span class="required">*</span>
+            <input type="text" id="motDePasse" name="pass_word" required>
             <p><input class="bouton" type="submit" value="Modifier" name="bouton"></p>
         </form>
 END;
