@@ -26,7 +26,10 @@ class CreateurController
         $v = new CreateurVue(null);
 
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $rs->getBody()->write($v->render($htmlvars, CreateurVue::HOME));
@@ -55,7 +58,10 @@ class CreateurController
             $v = new CreateurVue([$liste]);
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
-                'share' => $this->c->router->pathFor('partagerListe', ['token_admin'=>$liste->tokenAdmin])
+                'share' => $this->c->router->pathFor('partagerListe', ['token_admin'=>$liste->tokenAdmin]),
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
 
             $expiration = $liste->expiration;
@@ -100,7 +106,10 @@ class CreateurController
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'message' => "Cette liste est inexistante",
-                'url' => $this->c->router->pathFor('home', [])
+                'url' => $this->c->router->pathFor('home', []),
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
             $rs->getBody()->write($v->render($htmlvars, CreateurVue::MESSAGE));
             return $rs;
@@ -111,7 +120,10 @@ class CreateurController
     public function displayModifierItem(Request $rq, Response $rs, array $args): Response
     {
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $item = Item::query()->where('id', '=', $args['id_item'])->firstOrFail();
@@ -145,7 +157,10 @@ class CreateurController
             $img = null;
 
             $htmlvars = [
-                'basepath'=> $rq->getUri()->getBasePath()
+                'basepath'=> $rq->getUri()->getBasePath(),
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
 
             switch($_POST['choix']){
@@ -208,7 +223,10 @@ class CreateurController
             $htmlvars = [
                 'basepath'=> $rq->getUri()->getBasePath(),
                 'message' => "Item supprimé avec succès !",
-                'url' => $urlRedirection
+                'url' => $urlRedirection,
+                'accueil' => $this->c->router->pathFor('home'),
+                'connect' => $this->c->router->pathFor('connect', []),
+                'inscription' => $this->c->router->pathFor('inscription', [])
             ];
         }
         $v = new CreateurVue(null);
@@ -219,7 +237,10 @@ class CreateurController
     public function displayAjouterItem(Request $rq, Response $rs, array $args): Response
     {
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $liste = Liste::query()->where('tokenAdmin','=',$args['token_admin'])->firstOrFail();
@@ -232,7 +253,10 @@ class CreateurController
     public function displayModifierListe(Request $rq, Response $rs, array $args): Response
     {
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $liste = Liste::query()->where('tokenAdmin','=',$args['token_admin'])->firstOrFail();
@@ -276,7 +300,10 @@ class CreateurController
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
             'message' => "Utilisez ce token pour modifier votre liste : {$tokenAdmin}",
-            'url' => $url
+            'url' => $url,
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $v = new CreateurVue(null);
@@ -303,7 +330,10 @@ class CreateurController
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
             'message' => "Liste modifiée avec succès !",
-            'url' => $url
+            'url' => $url,
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $v = new CreateurVue(null);
@@ -325,7 +355,10 @@ class CreateurController
         $img = null;
 
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         switch($_POST['choix']){
@@ -393,7 +426,10 @@ class CreateurController
     public function displayFormulaire(Request $rq, Response $rs, array $args): Response
     {
         $htmlvars = [
-            'basepath'=> $rq->getUri()->getBasePath()
+            'basepath'=> $rq->getUri()->getBasePath(),
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $v = new CreateurVue(null);
@@ -410,7 +446,10 @@ class CreateurController
         $htmlvars = [
             'basepath'=> $rq->getUri()->getBasePath(),
             'message' => "Voici le token de votre liste à partager : {$liste->token}",
-            'url' => $urlDetailListe
+            'url' => $urlDetailListe,
+            'accueil' => $this->c->router->pathFor('home'),
+            'connect' => $this->c->router->pathFor('connect', []),
+            'inscription' => $this->c->router->pathFor('inscription', [])
         ];
 
         $v = new CreateurVue(null);
