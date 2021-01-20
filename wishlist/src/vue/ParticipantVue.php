@@ -80,6 +80,7 @@ class ParticipantVue
 END;
         if (sizeof($vars['objets']) > 0) {
             $html .= <<<END
+<section class="tableau">
 <table>
     <tr>
         <th>Nom</th>

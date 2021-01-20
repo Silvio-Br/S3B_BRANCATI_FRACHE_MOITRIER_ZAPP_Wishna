@@ -223,7 +223,7 @@ END;
         $html = <<<END
 <form method="post" enctype="multipart/form-data">
             <p>Nom<span class="required">*</span> : <input type="text" name="nom" value="{$item->nom}" required/></p>
-            <p>Description<span class="required">*</span> : <input type="text" name="desc" value="{$item->descr} "required/></p>
+            <p>Description<span class="required">*</span> : <input type="text" name="desc" value="{$item->descr} " required/></p>
             <p>Prix<span class="required">*</span> : <input type="number" min="0" step="1" name="prix" value="{$prix}" required/></p>
             <p>Url : <input type="url" name="url" value="{$item->url}"/></p>
            <p>Image :
@@ -242,8 +242,8 @@ END;
         $date = $date->format("Y-m-d");
         $html = <<<END
 <form method="post">
-            <p>Titre<span class="required">*</span> : <input type="text" name="titre" value="{$liste->titre}"required/></p>
-            <p>Description<span class="required">*</span> : <input type="text" name="desc" value="{$liste->description}"required/></p>
+            <p>Titre<span class="required">*</span> : <input type="text" name="titre" value="{$liste->titre}" required/></p>
+            <p>Description<span class="required">*</span> : <input type="text" name="desc" value="{$liste->description}" required/></p>
             <p>Date d'expiration<span class="required">*</span> : <input type="date" name="date" value="{$liste->expiration}" min="{$date}" required/></p>
             <p><input type="submit" value="OK"></p>
         </form>
