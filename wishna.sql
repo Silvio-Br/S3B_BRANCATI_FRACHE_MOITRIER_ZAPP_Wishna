@@ -92,7 +92,6 @@ INSERT INTO `item` (`id`, `liste_id`, `nom`, `descr`, `img`, `url`, `tarif`, `re
 
 CREATE TABLE `liste` (
   `no` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
   `titre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `expiration` date DEFAULT NULL,
@@ -106,9 +105,9 @@ CREATE TABLE `liste` (
 --
 
 INSERT INTO `liste` (`no`, `titre`, `description`, `expiration`, `token`, `tokenAdmin`, `etrePublique`) VALUES
-(1, 1, 'Pour fêter le bac !', 'Pour un week-end à Nancy qui nous fera oublier les épreuves. ', '2021-04-15', 'token1', 'admin1', 1),
-(2, 2, 'Liste de mariage d\'Alice et Bob', 'Nous souhaitons passer un week-end royal à Nancy pour notre lune de miel :)', '2018-06-30', 'token2', 'admin2', 1),
-(3, 3, 'C\'est l\'anniversaire de Charlie', 'Pour lui préparer une fête dont il se souviendra :)', '2017-12-12', 'token3', 'admin3', 0);
+(1, 'Pour fêter le bac !', 'Pour un week-end à Nancy qui nous fera oublier les épreuves. ', '2021-04-15', 'token1', 'admin1', 1),
+(2, 'Liste de mariage d\'Alice et Bob', 'Nous souhaitons passer un week-end royal à Nancy pour notre lune de miel :)', '2018-06-30', 'token2', 'admin2', 1),
+(3, 'C\'est l\'anniversaire de Charlie', 'Pour lui préparer une fête dont il se souviendra :)', '2017-12-12', 'token3', 'admin3', 0);
 
 --
 -- Index pour les tables déchargées
